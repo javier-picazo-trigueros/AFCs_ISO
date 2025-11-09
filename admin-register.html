@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Crear cuenta Admin – AFcS Portal</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <h1 class="brand">AFcS <span class="muted">Admin</span></h1>
+    <nav class="main-nav">
+      <a href="index.html">Volver</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <div class="hero-card">
+      <h2>Crear cuenta de administrador</h2>
+      <p class="lead">Regístrate como administrador con tu correo <strong>@ufv.es</strong> (personal institucional)</p>
+
+      <form id="admin-register-form" class="form-compact">
+        <label>Nombre<br>
+          <input type="text" name="nombre" id="nombre" placeholder="Tu nombre" style="width:100%;padding:8px;margin-top:6px;border-radius:4px;border:1px solid #ccc">
+        </label>
+        <label style="display:block;margin-top:12px">Email institucional (@ufv.es)<br>
+          <input type="email" name="email" id="email" required placeholder="admin@ufv.es" style="width:100%;padding:8px;margin-top:6px;border-radius:4px;border:1px solid #ccc">
+        </label>
+        <label style="display:block;margin-top:12px">Contraseña<br>
+          <input type="password" name="password" id="password" required placeholder="mínimo 6 caracteres" style="width:100%;padding:8px;margin-top:6px;border-radius:4px;border:1px solid #ccc">
+        </label>
+        <label style="display:block;margin-top:12px">Confirmar contraseña<br>
+          <input type="password" name="password2" id="password2" required placeholder="repite la contraseña" style="width:100%;padding:8px;margin-top:6px;border-radius:4px;border:1px solid #ccc">
+        </label>
+
+        <div id="form-error" class="note" style="margin-top:10px;color:#c0392b"></div>
+
+        <div style="margin-top:14px">
+          <button class="btn-primary" type="submit">Crear cuenta</button>
+        </div>
+      </form>
+
+      <p class="note">¿Ya tienes cuenta? <a href="admin-login.html">Inicia sesión aquí</a></p>
+    </div>
+  </section>
+</main>
+
+<script src="js/admin-auth.js" defer></script>
+</body>
+</html>

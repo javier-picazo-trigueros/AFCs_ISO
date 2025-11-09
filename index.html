@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AFCs Portal – UFV</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <h1 class="brand">AFcS <span class="muted">Portal</span></h1>
+    <nav class="main-nav">
+      <a href="catalogo.html">Catálogo</a>
+      <a href="inscripciones.html">Inscripciones</a>
+      <a href="register.html" class="btn-link">Crear cuenta</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <div class="hero-card">
+      <h2>Bienvenido a AFcS</h2>
+      <p class="lead">Accede con tu correo institucional <strong>@alumnos.ufv.es</strong> para gestionar tus inscripciones.</p>
+
+      <form id="login-form" class="form-compact" onsubmit="event.preventDefault(); window.location.href='dashboard.html'">
+        <input type="email" placeholder="usuario@alumnos.ufv.es" required>
+        <input type="password" placeholder="Contraseña" required>
+        <div class="actions-row">
+          <button class="btn-primary" type="submit">Acceder</button>
+          <button type="button" class="btn-ghost" onclick="window.location.href='catalogo.html'">Entrar como invitado</button>
+        </div>
+      </form>
+
+      <p class="note">¿No tienes cuenta? <a href="register.html">Regístrate aquí</a></p>
+    </div>
+
+    <div class="hero-card" style="margin-top: 24px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border: 2px dashed #003366;">
+      <h3 style="color:#003366; margin-top: 0;">Panel de Administrador</h3>
+      <p class="lead" style="color: #555; font-size: 0.95rem;">¿Eres administrador de AFcS? Accede al panel para gestionar actividades e inscripciones.</p>
+      <div class="actions-row">
+        <button type="button" class="btn-primary" onclick="window.location.href='admin-login.html'">Panel Admin</button>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>

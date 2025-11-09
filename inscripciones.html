@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mis Inscripciones – AFcS Portal</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header><h1>Mis Inscripciones</h1></header>
+<nav>
+  <a href="dashboard.html">🏠 Inicio</a>
+  <a href="catalogo.html">🗂️ Catálogo</a>
+  <a href="progreso.html">🎓 Mi progreso</a>
+  <a href="inscripciones.html">📝 Mis inscripciones</a>
+</nav>
+<main>
+  <h2>Actividades en las que estás inscrita</h2>
+
+  <div id="inscripciones-list">
+    <!-- Las inscripciones se cargan aquí mediante JavaScript -->
+  </div>
+
+  <template id="inscripcion-template">
+    <div class="card">
+      <strong class="actividad-nombre"></strong><br>
+      <small class="actividad-meta"></small><br>
+      <div class="acciones"></div>
+    </div>
+  </template>
+
+</main>
+<script src="js/app.js" defer></script>
+</body>
+</html>
+</body>
+</html>

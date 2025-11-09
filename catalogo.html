@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AFcS Portal – Catálogo</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f5f5f5;margin:0}
+header{background:#003366;color:#fff;padding:12px;text-align:center}
+nav{background:#e9eef6;display:flex;justify-content:center;gap:20px;padding:10px}
+nav a{text-decoration:none;color:#003366;font-weight:bold}
+nav a:hover{text-decoration:underline}
+main{max-width:900px;margin:auto;padding:20px}
+.filter{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:15px}
+select,input[type="search"]{padding:6px;border:1px solid #ccc;border-radius:6px}
+.card{background:#fff;border-radius:8px;padding:14px;margin:10px 0;border:1px solid #ddd}
+button{background:#003366;color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer}
+button:hover{background:#00244f}
+</style>
+</head>
+<body>
+<header><h1>Catálogo de Actividades AFcS</h1></header>
+<nav>
+  <a href="dashboard.html">🏠 Inicio</a>
+  <a href="catalogo.html">🗂️ Catálogo</a>
+  <a href="progreso.html">🎓 Mi progreso</a>
+  <a href="inscripciones.html">📝 Mis inscripciones</a>
+</nav>
+<main>
+  <div class="filter">
+    <input type="search" placeholder="Buscar actividad...">
+    <select><option>Todas las categorías</option><option>Voluntariado</option><option>Deporte</option><option>Idiomas</option></select>
+    <select><option>Modalidad</option><option>Presencial</option><option>Online</option></select>
+    <select><option>ECTS</option><option>1</option><option>2</option><option>3</option></select>
+  </div>
+
+  <div class="card">
+    <strong>Seminario de Innovación Social</strong><br>
+    <small>2 ECTS · Presencial · 8 plazas</small><br>
+    <button onclick="window.location.href='detalle.html'">Ver detalles</button>
+  </div>
+  <div class="card">
+    <strong>Taller de Fotografía Creativa</strong><br>
+    <small>1 ECTS · Online · 12 plazas</small><br>
+    <button onclick="window.location.href='detalle.html'">Ver detalles</button>
+  </div>
+</main>
+</body>
+</html>

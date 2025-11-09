@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Panel Admin – AFcS Portal</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <h1 class="brand">AFcS <span class="muted">Admin</span></h1>
+    <nav class="main-nav">
+      <a href="index.html">Volver</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <div class="hero-card">
+      <h2>Panel de Administrador</h2>
+      <p class="lead">Accede con tu correo institucional <strong>@ufv.es</strong> (personal administrativo)</p>
+
+      <form id="admin-login-form" class="form-compact">
+        <input type="email" name="email" id="email" placeholder="admin@ufv.es" required>
+        <input type="password" name="password" id="password" placeholder="Contraseña" required>
+
+        <div id="form-error" class="note" style="margin-top:10px;color:#c0392b"></div>
+
+        <div class="actions-row">
+          <button class="btn-primary" type="submit">Acceder</button>
+        </div>
+      </form>
+
+      <p class="note">¿No tienes cuenta de admin? <a href="admin-register.html">Crear cuenta de administrador</a></p>
+    </div>
+  </section>
+</main>
+
+<script src="js/admin-auth.js" defer></script>
+</body>
+</html>
