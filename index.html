@@ -1,49 +1,82 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>AFCs Portal – UFV</title>
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFCs UFV - Actividades Formativas Complementarias</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="https://www.ufv.es/wp-content/uploads/2020/01/cropped-favicon-32x32.png">
 </head>
 <body>
-<header class="site-header">
-  <div class="container">
-    <h1 class="brand">AFcS <span class="muted">Portal</span></h1>
-    <nav class="main-nav">
-      <a href="catalogo.html">Catálogo</a>
-      <a href="inscripciones.html">Inscripciones</a>
-      <a href="register.html" class="btn-link">Crear cuenta</a>
-    </nav>
-  </div>
-</header>
 
-<main class="container">
-  <section class="hero">
-    <div class="hero-card">
-      <h2>Bienvenido a AFcS</h2>
-      <p class="lead">Accede con tu correo institucional <strong>@alumnos.ufv.es</strong> para gestionar tus inscripciones.</p>
-
-      <form id="login-form" class="form-compact" onsubmit="event.preventDefault(); window.location.href='dashboard.html'">
-        <input type="email" placeholder="usuario@alumnos.ufv.es" required>
-        <input type="password" placeholder="Contraseña" required>
-        <div class="actions-row">
-          <button class="btn-primary" type="submit">Acceder</button>
-          <button type="button" class="btn-ghost" onclick="window.location.href='catalogo.html'">Entrar como invitado</button>
+    <header>
+        <div class="logo">
+            <img src="img/logo-ufv.jpg" alt="Logo UFV">
+            <span>AFCs UFV</span>
         </div>
-      </form>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="active">Inicio</a></li>
+                <li data-auth="guest-only"><a href="register.html">Registro/Login</a></li>
+                <li data-auth="user-only"><a href="catalogo.html">Catálogo</a></li>
+                <li data-auth="user-only"><a href="inscripciones.html">Mis Inscripciones</a></li>
+                <li data-auth="user-only"><a href="progreso.html">Mi Progreso</a></li>
+                <li data-auth="admin-only"><a href="admin-panel.html">Panel Admin</a></li>
+                <li data-auth="user-only" id="logout-li"><a href="#" id="logout-link">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
 
-      <p class="note">¿No tienes cuenta? <a href="register.html">Regístrate aquí</a></p>
+    <div class="container">
+        <main>
+            <section class="hero">
+                <h1>Actividades Formativas Complementarias</h1>
+                <p>Explora, inscríbete y sigue tu progreso en las AFCs de la UFV. Forma parte de la vida universitaria y completa tus créditos de una manera sencilla y centralizada.</p>
+                <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                    <a href="catalogo.html" class="btn btn-primary" data-auth="guest-or-user">Explorar Catálogo</a>
+                    <a href="admin-login.html" class="btn btn-secondary" data-auth="guest-only">Acceso Administradores</a>
+                </div>
+            </section>
+
+            <section class="mt-2" data-auth="guest-only">
+                <h2 class="text-center" style="color: var(--ufv-blue); margin-bottom: 2rem;">¿Cómo funciona?</h2>
+                <div class="catalog-grid">
+                    <div class="card">
+                        <strong>1. Explora</strong>
+                        <p class="note">Navega por un catálogo dinámico de actividades: voluntariado, deportes, seminarios y más. Usa los filtros para encontrar exactamente lo que buscas.</p>
+                    </div>
+                    <div class="card">
+                        <strong>2. Inscríbete</strong>
+                        <p class="note">Con un solo clic y usando tu cuenta de la UFV, apúntate a las actividades que te interesen. ¡Olvídate de formularios externos!</p>
+                    </div>
+                    <div class="card">
+                        <strong>3. Participa y Suma ECTS</strong>
+                        <p class="note">Asiste a las actividades y sigue tu progreso de ECTS en tiempo real desde tu panel personal. Todo lo que necesitas para completar tus créditos, en un mismo lugar.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contenido para usuarios logueados -->
+            <section class="mt-2" data-auth="user-only">
+                <h2 class="text-center" style="color: var(--ufv-blue); margin-bottom: 2rem;">Bienvenido de nuevo</h2>
+                <p class="text-center note" style="max-width: 600px; margin: 0 auto 2rem auto;">Accede directamente a tus secciones o explora nuevas actividades en el catálogo.</p>
+                <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                    <a href="catalogo.html" class="btn btn-primary">Ver Catálogo</a>
+                    <a href="progreso.html" class="btn btn-secondary">Mi Progreso</a>
+                </div>
+            </section>
+
+             <!-- Contenido para administradores logueados -->
+             <section class="mt-2" data-auth="admin-only">
+                <h2 class="text-center" style="color: var(--ufv-blue); margin-bottom: 2rem;">Panel de Administrador</h2>
+                <p class="text-center note" style="max-width: 600px; margin: 0 auto 2rem auto;">Has iniciado sesión como administrador. Accede al panel para gestionar actividades y ver estadísticas.</p>
+                <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                    <a href="admin-panel.html" class="btn btn-primary">Ir al Panel</a>
+                </div>
+            </section>
+        </main>
     </div>
 
-    <div class="hero-card" style="margin-top: 24px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border: 2px dashed #003366;">
-      <h3 style="color:#003366; margin-top: 0;">Panel de Administrador</h3>
-      <p class="lead" style="color: #555; font-size: 0.95rem;">¿Eres administrador de AFcS? Accede al panel para gestionar actividades e inscripciones.</p>
-      <div class="actions-row">
-        <button type="button" class="btn-primary" onclick="window.location.href='admin-login.html'">Panel Admin</button>
-      </div>
-    </div>
-  </section>
-</main>
+    <script src="js/nav.js"></script>
 </body>
 </html>

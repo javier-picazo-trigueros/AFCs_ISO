@@ -1,49 +1,86 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AFcS Portal – Catálogo</title>
-<style>
-body{font-family:Arial,sans-serif;background:#f5f5f5;margin:0}
-header{background:#003366;color:#fff;padding:12px;text-align:center}
-nav{background:#e9eef6;display:flex;justify-content:center;gap:20px;padding:10px}
-nav a{text-decoration:none;color:#003366;font-weight:bold}
-nav a:hover{text-decoration:underline}
-main{max-width:900px;margin:auto;padding:20px}
-.filter{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:15px}
-select,input[type="search"]{padding:6px;border:1px solid #ccc;border-radius:6px}
-.card{background:#fff;border-radius:8px;padding:14px;margin:10px 0;border:1px solid #ddd}
-button{background:#003366;color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer}
-button:hover{background:#00244f}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Actividades - AFCs UFV</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="https://www.ufv.es/wp-content/uploads/2020/01/cropped-favicon-32x32.png">
 </head>
 <body>
-<header><h1>Catálogo de Actividades AFcS</h1></header>
-<nav>
-  <a href="dashboard.html">🏠 Inicio</a>
-  <a href="catalogo.html">🗂️ Catálogo</a>
-  <a href="progreso.html">🎓 Mi progreso</a>
-  <a href="inscripciones.html">📝 Mis inscripciones</a>
-</nav>
-<main>
-  <div class="filter">
-    <input type="search" placeholder="Buscar actividad...">
-    <select><option>Todas las categorías</option><option>Voluntariado</option><option>Deporte</option><option>Idiomas</option></select>
-    <select><option>Modalidad</option><option>Presencial</option><option>Online</option></select>
-    <select><option>ECTS</option><option>1</option><option>2</option><option>3</option></select>
-  </div>
+    <header>
+        <div class="logo">
+            <img src="img/logo-ufv.jpg" alt="Logo UFV">
+            <span>AFCs UFV</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li data-auth="guest-only"><a href="register.html">Registro/Login</a></li>
+                <li data-auth="user-only"><a href="catalogo.html" class="active">Catálogo</a></li>
+                <li data-auth="user-only"><a href="inscripciones.html">Mis Inscripciones</a></li>
+                <li data-auth="user-only"><a href="progreso.html">Mi Progreso</a></li>
+                <li data-auth="admin-only"><a href="admin-panel.html">Panel Admin</a></li>
+                <li data-auth="user-only" id="logout-li"><a href="#" id="logout-link">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
 
-  <div class="card">
-    <strong>Seminario de Innovación Social</strong><br>
-    <small>2 ECTS · Presencial · 8 plazas</small><br>
-    <button onclick="window.location.href='detalle.html'">Ver detalles</button>
-  </div>
-  <div class="card">
-    <strong>Taller de Fotografía Creativa</strong><br>
-    <small>1 ECTS · Online · 12 plazas</small><br>
-    <button onclick="window.location.href='detalle.html'">Ver detalles</button>
-  </div>
-</main>
+    <div class="container">
+        <h1 style="color: var(--ufv-blue); margin-bottom: 2rem;">Catálogo de Actividades</h1>
+        
+        <div class="filter-bar">
+            <input type="text" id="search" placeholder="Buscar por nombre o palabra clave...">
+            <select id="filter-ects">
+                <option value="">Todos los ECTS</option>
+                <option value="lt1">Menos de 1 crédito</option>
+                <option value="1-2">1 a 2 créditos</option>
+                <option value="2-3">2 a 3 créditos</option>
+                <option value="gte3">3 o más créditos</option>
+            </select>
+            <select id="filter-disponible">
+                <option value="">Cualquier disponibilidad</option>
+                <option value="1">Con plazas disponibles</option>
+                <option value="0">Sin plazas</option>
+            </select>
+            <button id="btn-clear" class="btn btn-secondary">Limpiar</button>
+        </div>
+
+        <div id="catalog-list">
+            <!-- Las actividades se cargarán aquí dinámicamente -->
+        </div>
+    </div>
+
+    <!-- Modal para Ver Más -->
+    <div id="activity-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div class="modal-header">
+                <h2 id="modal-title"></h2>
+                <input type="hidden" id="modal-activity-id">
+            </div>
+            <div class="modal-body">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <p><strong>Créditos ECTS:</strong> <span id="modal-ects"></span></p>
+                        <p><strong>Modalidad:</strong> <span id="modal-modalidad">Presencial</span></p>
+                    </div>
+                    <div>
+                        <p><strong>Fecha de inicio:</strong> <span id="modal-fecha-inicio"></span></p>
+                        <p><strong>Fecha de fin:</strong> <span id="modal-fecha-fin"></span></p>
+                    </div>
+                </div>
+                <hr>
+                <h3>Descripción</h3>
+                <p id="modal-description"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/nav.js"></script>
+    <script src="js/catalog.js"></script>
 </body>
 </html>

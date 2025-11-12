@@ -1,99 +1,315 @@
-# AFcS DEMO — Portal de Actividades Extracurriculares
+# 🎓 AFCs Demo - Plataforma de Actividades Formativas Complementarias
 
-## Características principales
+Una aplicación web profesional para gestionar inscripciones en Actividades Formativas Complementarias (AFCs) de la Universidad Francisco de Vitoria (UFV).
 
-### Para Estudiantes
-- **Registro de usuarios** con validación de email @alumnos.ufv.es
-- **Visualización de actividades** disponibles
-- **Sistema de inscripciones** a actividades
-- **Gestión de mis inscripciones** con opción de cancelar
-- **Panel de progreso** para seguir ECTS conseguidos
+![UFV Theme](https://img.shields.io/badge/Theme-UFV%20Professional-003366)
+![Node.js](https://img.shields.io/badge/Node.js-Express.js-green)
+![Database](https://img.shields.io/badge/Database-SQLite3-blue)
+![Frontend](https://img.shields.io/badge/Frontend-Vanilla%20JS-yellow)
 
-### Para Administradores
-- **Registro de admin** con validación de email @ufv.es (personal no alumno)
-- **Panel de control** con estadísticas de inscripciones
-- **CRUD completo de actividades** (crear, editar, eliminar)
-- **Visualización de inscritos** por actividad
-- **Reporte general** de uso del portal
+---
 
-## Cómo usar (Windows PowerShell)
+## 📋 Características Principales
 
-### Instalación y arranque
+✅ **Sistema de Autenticación** - Registro/Login para estudiantes (@alumnos.ufv.es) y administradores (@ufv.es)
 
-1. Instalar Node.js: https://nodejs.org/
-2. Abrir PowerShell en la carpeta del proyecto
-3. Instalar dependencias: `npm install`
-4. Iniciar servidor: `npm start`
-5. Abrir navegador: http://localhost:3000/
+✅ **Catálogo de Actividades** - Visualización con filtros avanzados por ECTS, búsqueda, y detalles completos
 
-**El servidor debe mostrar:** `Server listening on http://localhost:3000`
+✅ **Gestión de Inscripciones** - Inscribirse, darse de baja, y seguimiento de créditos ECTS
 
-### ⚠️ Solucionar "Error de Red" en Admin Dashboard
+✅ **Panel Administrativo** - Crear, editar y eliminar actividades formativas
 
-Si ves "Error de Red" al intentar entrar al panel admin:
+✅ **Panel de Progreso** - Visualización de créditos acumulados y actividades inscritas
 
-1. **Verifica que el servidor está corriendo**
-   - Abre otra terminal/PowerShell en la misma carpeta
-   - Ejecuta: `npm start`
-   - Debe aparecer: `Server listening on http://localhost:3000`
+✅ **Diseño Profesional** - Tema visual UFV con interfaz responsive y animaciones
 
-2. **Verifica la conexión**
-   - En el navegador, abre: http://localhost:3000/api/health
-   - Debe mostrar: `{"status":"ok","timestamp":"..."}`
+---
 
-3. **Limpia localStorage si tuviste error anterior**
-   - Abre la consola (F12)
-   - Ejecuta: `localStorage.clear()` y recarga la página
+## 🛠️ Requisitos Previos
 
-4. **Revisa los logs del servidor**
-   - Busca mensajes de error en la terminal donde corre `npm start`
-   - Los errores aparecerán allí
+Antes de comenzar, asegúrate de tener instalados:
 
-### Flujo Como Estudiante
-1. Ir a http://localhost:3000
-2. Crear cuenta con email @alumnos.ufv.es
-3. Navegar a Catálogo o Mis inscripciones
+- **Node.js** (v14 o superior) - [Descargar](https://nodejs.org/)
+- **npm** (gestor de paquetes de Node.js, incluido con Node.js)
 
-### Flujo Como Admin
-1. Ir a http://localhost:3000/admin-login.html
-2. Crear cuenta con email @ufv.es (no alumnos)
-3. Acceder al panel de control para gestionar actividades
+### Verificar instalación
 
-## Base de Datos
+Abre PowerShell y ejecuta:
 
-Estructura creada automáticamente:
-- **admin_users**: administradores @ufv.es
-- **users**: estudiantes @alumnos.ufv.es
-- **actividades**: catálogo de actividades ECTS
-- **inscripcion_actividades**: relación usuario-actividad
+```powershell
+node --version
+npm --version
+```
 
-3 actividades de demo incluidas:
-- Voluntariado UFV Solidaria (2 ECTS, max 30)
-- Seminario de Innovación Social (2 ECTS, max 25)
-- Taller de Liderazgo (1 ECTS, max 20)
+Deberías ver los números de versión de ambos.
 
-## API REST Endpoints
+---
 
-### Admin
-- POST /api/admin/register
-- POST /api/admin/login
-- GET /api/admin/reporte
-- POST/PUT/DELETE /api/actividades/:id
+## 📦 Instalación
 
-### Estudiantes
-- POST /api/users
-- GET /api/actividades
-- POST /api/inscribir
-- DELETE /api/inscripciones/:id
-- GET /api/actividades/:id/stats
+### 1️⃣ Abrir PowerShell en la Carpeta del Proyecto
 
-## Notas de Seguridad
+```powershell
+# Navega a la carpeta del proyecto
+cd "C:\ruta\a\tu\carpeta\AFCsDEMO"
+```
 
-⚠️ Demo: antes de producción añadir HTTPS, rate limiting, JWT, verificación email, CSRF protection, validación exhaustiva de inputs, auditoría, backups y logs.
+### 2️⃣ Instalar Dependencias
 
-## Dependencias
+```powershell
+npm install
+```
 
-- express ^4.18.2
-- sqlite3 ^5.1.6
-- bcryptjs ^2.4.3
+Esto instalará:
+- **express** - Servidor web
+- **sqlite3** - Base de datos
+- **bcryptjs** - Encriptación de contraseñas
+
+---
+
+## 🚀 Cómo Iniciar la Aplicación
+
+### Comando Principal
+
+```powershell
+npm start
+```
+
+**Salida esperada:**
+```
+🚀 Server listening on http://localhost:3000
+📡 Accesible en red local: http://10.10.61.187:3000
+⚠️  Comparte esta URL con otros dispositivos en la WiFi
+```
+
+### Acceder a la Aplicación
+
+Una vez que el servidor esté ejecutándose, abre tu navegador y ve a:
+
+```
+http://localhost:3000
+```
+
+---
+
+## 👤 Primeros Pasos - Guía Rápida
+
+### 1️⃣ Crear una Cuenta de Estudiante
+
+1. En la página de inicio, haz clic en **"Registrarse"**
+2. Selecciona **"Registro de Estudiante"**
+3. Completa el formulario:
+   - **Email**: Debe terminar en `@alumnos.ufv.es` (ej: `juan@alumnos.ufv.es`)
+   - **Contraseña**: Mínimo 6 caracteres
+   - **Nombre y Apellido**: Tus datos
+4. Haz clic en **"Registrarse"**
+5. Inicia sesión con tus credenciales
+
+### 2️⃣ Explorar el Catálogo
+
+1. Ve a **"Catálogo"** desde el menú
+2. **Busca** actividades por nombre
+3. **Filtra** por:
+   - Rango de ECTS
+   - Disponibilidad
+4. Haz clic en **"Ver más"** para ver detalles completos
+5. Haz clic en **"Inscribirse"** para participar
+
+### 3️⃣ Gestionar Inscripciones
+
+1. Ve a **"Mis Inscripciones"** desde el menú
+2. Verás todas tus actividades
+3. Puedes hacer clic en **"Dar de Baja"** para desuscribirte
+
+### 4️⃣ Ver Mi Progreso
+
+1. Ve a **"Mi Progreso"** desde el menú
+2. Visualiza tu barra de progreso ECTS
+3. Ve todas tus actividades activas
+
+---
+
+## 👨‍💼 Acceso Administrativo
+
+### Crear Cuenta de Administrador
+
+1. Haz clic en **"Registrarse"**
+2. Selecciona **"Registro de Administrador"**
+3. Completa con:
+   - **Email**: Debe terminar en `@ufv.es` (ej: `admin@ufv.es`)
+   - **Contraseña**: Mínimo 6 caracteres
+4. Inicia sesión
+
+### Usar el Panel Admin
+
+Una vez logueado como admin:
+
+1. Ve a **"Panel Admin"** desde el menú
+2. **Crear Actividades**:
+   - Nombre, descripción, créditos ECTS
+   - Fecha inicio/fin
+   - Modalidad (Presencial, Online, Híbrido)
+   - Máximo de inscritos
+3. **Editar/Eliminar** tus actividades desde el listado
+
+---
+
+## 🔧 Detener el Servidor
+
+Para detener en cualquier momento:
+
+1. Regresa a PowerShell
+2. Presiona `Ctrl + C`
+
+Para reiniciar, simplemente ejecuta `npm start` de nuevo.
+
+---
+
+## 📁 Estructura del Proyecto
+
+```
+AFCsDEMO/
+├── server.js                         # Servidor Express + API + BD
+├── package.json                      # Dependencias
+├── README.md                         # Este archivo
+├── FUNCIONALIDADES_COMPLETADAS.md    # Lista detallada de funcionalidades
+│
+├── index.html                        # Página de inicio
+├── catalogo.html                     # Catálogo de actividades
+├── inscripciones.html                # Mis inscripciones
+├── progreso.html                     # Mi progreso ECTS
+├── register.html                     # Registro/Login
+├── dashboard.html                    # Panel administrativo
+│
+├── css/
+│   └── style.css                     # Estilos profesionales UFV
+│
+├── js/
+│   ├── app.js                        # Lógica de inscripciones
+│   ├── auth.js                       # Autenticación
+│   ├── catalog.js                    # Catálogo y filtros
+│   ├── nav.js                        # Navegación dinámica
+│   └── progreso.js                   # Seguimiento de progreso
+│
+├── img/
+│   └── logo-ufv.jpg                  # Logo UFV
+│
+└── db/
+    └── inscripciones.db              # Base de datos (creada automáticamente)
+```
+
+---
+
+## 🐛 Solución de Problemas
+
+### El servidor no inicia
+
+**Problema**: `npm start` no funciona
+
+**Solución**:
+1. Verifica: `node --version`
+2. Asegúrate de estar en `AFCsDEMO`: `cd AFCsDEMO`
+3. Reinstala: `npm install`
+
+### No puedo acceder a http://localhost:3000
+
+**Problema**: "Conexión rechazada"
+
+**Solución**:
+1. Verifica que el servidor esté corriendo en PowerShell
+2. Usa `http://` (no `https://`)
+3. Intenta `http://127.0.0.1:3000`
+4. El puerto 3000 debe estar libre
+
+### El correo no valida
+
+**Problema**: "Email debe terminar en @alumnos.ufv.es"
+
+**Solución**:
+- Estudiantes: `email@alumnos.ufv.es`
+- Admins: `email@ufv.es`
+
+### Los datos desaparecen
+
+**Problema**: Las inscripciones no se guardan
+
+**Solución**: Los datos SE guardan en la base de datos. Si cierras el navegador/sesión, al volver a iniciar sesión verás tus inscripciones.
+
+### Restablecer Base de Datos
+
+Para empezar de cero:
+
+```powershell
+Remove-Item -Path "db\inscripciones.db" -Force
+npm start
+```
+
+---
+
+## 📚 Documentación Completa
+
+Para ver la lista detallada de todas las funcionalidades implementadas:
+
+👉 **[FUNCIONALIDADES_COMPLETADAS.md](./FUNCIONALIDADES_COMPLETADAS.md)**
+
+---
+
+## 🔐 Seguridad
+
+✅ Contraseñas hasheadas con bcryptjs  
+✅ Validación de emails por rol  
+✅ Sesiones en localStorage  
+✅ Validación en servidor  
+✅ Confirmaciones para acciones críticas  
+
+---
+
+## 📊 Base de Datos
+
+SQLite3 - Base de datos local y automática.
+
+**Tablas**:
+- `usuarios` - Estudiantes
+- `admin_usuarios` - Administradores
+- `actividades` - Catálogo de actividades
+- `inscripcion_actividades` - Inscripciones
+
+La BD se crea automáticamente con datos de prueba.
+
+---
+
+## 🚀 API REST Endpoints
+
+### Autenticación
+- `POST /api/users/register` - Registrar estudiante
+- `POST /api/users/login` - Login estudiante
+- `POST /api/admin/register` - Registrar admin
+- `POST /api/admin/login` - Login admin
+
+### Actividades
+- `GET /api/actividades` - Obtener todas
+- `GET /api/actividades/:id/stats` - Estadísticas
+- `POST /api/admin/actividades` - Crear (admin)
+- `PUT /api/admin/actividades/:id` - Editar (admin)
+- `DELETE /api/admin/actividades/:id` - Eliminar (admin)
+
+### Inscripciones
+- `GET /api/inscripciones` - Mis inscripciones
+- `POST /api/inscribir` - Inscribirse
+- `DELETE /api/inscripciones/:id` - Darse de baja
+
+---
+
+## 📞 Soporte Rápido
+
+1. Revisa la sección "Solución de Problemas"
+2. Verifica que Node.js está actualizado
+3. Limpia caché: `Ctrl + Shift + Supr`
+4. Reinicia: Detén el servidor y `npm start` de nuevo
+
+---
+
+## ✨ ¡A Disfrutar!
+
+**Happy coding! 🚀**
 

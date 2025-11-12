@@ -90,102 +90,178 @@
 - [x] **Mostrar errores detallados** en tabla cuando falla fetch
 - [x] **Documentar pasos para resolver "Error de Red"**
 
-## ✅ Fase 11: Acceso en Red Local
+## ✅ Fase 12: Rediseño Profesional UFV
 
-- [x] **Modificar servidor** para escuchar en `0.0.0.0` (todas las interfaces)
-- [x] **Detectar IP local automáticamente** usando `os.networkInterfaces()`
-- [x] **Mostrar URLs** en logs: localhost y IP de red
-- [x] **Permitir acceso desde otros dispositivos** en la WiFi
-- [x] **Documentar cómo compartir URL** con compañeros
+- [x] **Implementar tema visual UFV** con colores corporativos
+- [x] **Integrar logo UFV** en todas las páginas (header)
+- [x] **Crear variables CSS** para colores y estilos reutilizables
+- [x] **Diseño card-based** para actividades con badge de ECTS
+- [x] **Animaciones suaves** para modales, notificaciones y transiciones
+- [x] **Iconos y indicadores visuales** para estados de disponibilidad
+- [x] **Barra de progreso ECTS** con visualización porcentual
+- [x] **Responsive design completo** (móvil, tablet, desktop)
 
-## 📊 Resumen de Archivos Creados/Modificados
+## ✅ Fase 13: Sistema de Filtros Avanzados
 
-### HTML (9 archivos)
-- `index.html` — Portada con login + CTA admin
-- `register.html` — Registro de estudiantes
-- `admin-login.html` — Login de admin
-- `admin-register.html` — Registro de admin
-- `admin-panel.html` — Dashboard de administrador
-- `dashboard.html`, `inscripciones.html`, `catalogo.html`, `progreso.html` — Actualizados a AFcS
+- [x] **Crear filtros por rango de ECTS** (Menos de 1, 1-2, 2-3, 3+)
+- [x] **Filtro por disponibilidad** (Con/Sin plazas)
+- [x] **Búsqueda en tiempo real** por nombre y descripción
+- [x] **Botón limpiar filtros** para resetear vista
+- [x] **Actualización dinámica** del catálogo al filtrar
+- [x] **Indicadores visuales** de filtros activos
 
-### CSS (1 archivo)
-- `css/style.css` — Estilos centralizados + responsive + media queries
+## ✅ Fase 14: Modal de Detalles Completos
 
-### JavaScript (4 archivos)
-- `js/app.js` — Lógica de inscripciones de usuario
-- `js/auth.js` — Autenticación de estudiantes
-- `js/admin-auth.js` — Autenticación de administradores
-- `js/admin-dashboard.js` — Lógica del panel admin
+- [x] **Crear modal de actividad** con layout profesional
+- [x] **Mostrar información extendida**:
+  - Nombre completo
+  - Descripción detallada
+  - Créditos ECTS
+  - Modalidad (Presencial, Online, Híbrido)
+  - Fechas de inicio y fin
+  - Plazas disponibles
+- [x] **Añadir campo modalidad** a tabla de actividades
+- [x] **Botón "Ver más"** en cada tarjeta de actividad
+- [x] **Animación de modal** con backdrop
 
-### Backend
-- `server.js` — Express + SQLite con 6 tablas + 15+ endpoints
-- `package.json` — Dependencias (express, sqlite3, bcryptjs)
+## ✅ Fase 15: Gestión de Inscripciones en Interfaz
 
-### Documentación
-- `README.md` — Guía completa de instalación, uso y troubleshooting
-- `PROMPTS_COMPLETADOS.md` — Este archivo (checklist de features)
+- [x] **Botón "Inscribirse"** en tarjetas del catálogo
+- [x] **Botón "✓ Inscrito"** con estado deshabilitado
+- [x] **Botón "Dar de Baja"** para desuscribirse
+- [x] **Confirmación** antes de darse de baja
+- [x] **Notificaciones de éxito/error** al inscribirse
+- [x] **Actualización dinámica** de botones tras acción
+- [x] **Botón "Identifícate"** para usuarios no autenticados
+- [x] **Redirección a login** al intentar inscribirse sin sesión
 
-## 📈 Base de Datos (SQLite)
+## ✅ Fase 16: Sistema de Notificaciones
 
-**Tablas creadas:**
-1. `inscripciones` — Legacy, inscripciones simples
-2. `users` — Estudiantes con email @alumnos.ufv.es
-3. `admin_users` — Administradores con email @ufv.es
-4. `actividades` — Catálogo de actividades ECTS
-5. `inscripcion_actividades` — Relación usuario-actividad
+- [x] **Crear notificaciones tipo toast**
+- [x] **Tipos de notificación**: success, error, info
+- [x] **Auto-dismiss** después de 3 segundos
+- [x] **Posicionamiento** en esquina superior derecha
+- [x] **Animaciones suave** entrada/salida
+- [x] **Iconos y colores** diferenciados por tipo
 
-**Datos de demo insertados:**
-- 3 actividades: Voluntariado, Seminario, Taller
-- Tablas listas para crear nuevos usuarios y admin
+## ✅ Fase 17: Página "Mis Inscripciones"
 
-## 🔐 Seguridad Implementada
+- [x] **Listar actividades inscritas** del usuario
+- [x] **Mostrar información de cada actividad**
+- [x] **Botón "Dar de Baja"** en cada tarjeta
+- [x] **Confirmación** antes de darse de baja
+- [x] **Actualización dinámica** tras desuscribirse
+- [x] **Mensaje cuando no hay inscripciones**
 
-- [x] Hash de contraseñas con bcryptjs (salt 10)
-- [x] Validación de dominio en cliente y servidor
-- [x] Validación de longitud mínima de contraseña (6 chars)
-- [x] Prevención de duplicados con UNIQUE constraints
-- [x] Separación de roles: alumno vs admin
-- [x] Autenticación basada en localStorage (escalable a JWT)
+## ✅ Fase 18: Página "Mi Progreso"
 
-## 🚀 API REST Endpoints (15+)
+- [x] **Barra visual de progreso ECTS**
+- [x] **Cálculo automático** de créditos acumulados
+- [x] **Mostrar total de ECTS** obtenidos
+- [x] **Listado de actividades** inscritas/completadas
+- [x] **Información de modalidades** en actividades
+- [x] **Diseño visual atractivo** con colores UFV
 
-### Health & Demo
-- `GET /api/health` — Check de servidor
+## ✅ Fase 19: Navegación Dinámica por Rol
 
-### Estudiantes
-- `POST /api/users` — Registrar
-- `GET /api/actividades` — Listar actividades
-- `POST /api/inscribir` — Inscribirse
-- `GET /api/inscripciones` — Mis inscripciones (legacy)
-- `DELETE /api/inscripciones/:id` — Cancelar
-- `GET /api/actividades/:id/stats` — Stats de actividad
+- [x] **Menú diferenciado** según rol (guest, user, admin)
+- [x] **Elementos visibles/ocultos** según autenticación
+- [x] **Links activos** destacados en navegación
+- [x] **Logout funcional** con limpieza de sesión
+- [x] **Redirección automática** a login si acceso no autorizado
+- [x] **Panel admin** solo visible para administradores
 
-### Administradores
-- `POST /api/admin/register` — Registrar admin
-- `POST /api/admin/login` — Login admin
-- `GET /api/actividades` — Listar actividades
-- `POST /api/actividades` — Crear actividad
-- `PUT /api/actividades/:id` — Editar actividad
-- `DELETE /api/actividades/:id` — Eliminar actividad
-- `GET /api/admin/reporte` — Reporte general
+## ✅ Fase 20: Limpieza y Optimización de Código
 
-## 🎯 Próximas Mejoras Sugeridas
+- [x] **Refactorización de js/catalog.js** para usar DOM methods
+- [x] **Eliminación de innerHTML inyectado** en botones
+- [x] **Event handlers explícitos** sin onclick inline
+- [x] **Código modular y limpio** separado por funcionalidad
+- [x] **Variables descriptivas** y funciones bien nombradas
+- [x] **Manejo de errores mejorado** en fetch calls
+- [x] **Documentación de código** con comentarios claros
 
-- [ ] Implementar edición de actividades en modal
-- [ ] Añadir envío de emails de confirmación
-- [ ] Sistema de notificaciones en tiempo real (WebSockets)
-- [ ] Exportación de reportes (PDF/Excel)
-- [ ] Autenticación real con JWT + refresh tokens
-- [ ] Tests unitarios e integración
-- [ ] Migración a PostgreSQL
-- [ ] Despliegue en servidor (Heroku, AWS, etc.)
-- [ ] Verificación de correo electrónico al registrarse
-- [ ] Rate limiting y protección contra fuerza bruta
-- [ ] Auditoría de acciones de admin
-- [ ] Sistema de roles más granular (staff, profesor, etc.)
+## � Resumen de Archivos Modificados - Fase Final
+
+### HTML (6 archivos actualizados)
+- `index.html` — Tema UFV, logo, menú dinámico
+- `catalogo.html` — Filtros avanzados, modal, botones mejorados
+- `inscripciones.html` — Diseño UFV, botones funcionales
+- `progreso.html` — Barra visual, tema UFV
+- `register.html` — Tema UFV, logo actualizado
+- `dashboard.html` — Tema UFV, panel admin mejorado
+
+### CSS (1 archivo actualizado)
+- `css/style.css` — Variables UFV, animaciones, modales, notificaciones, responsive
+
+### JavaScript (5 archivos)
+- `js/catalog.js` — COMPLETAMENTE REFACTORIZADO (uso de createElement, manejo dinámico)
+- `js/app.js` — Lógica de inscripciones, gestión de darse de baja
+- `js/nav.js` — Navegación dinámica por rol
+- `js/auth.js` — Autenticación estudiantes
+- `js/progreso.js` — Seguimiento de ECTS
+
+### Backend (1 archivo actualizado)
+- `server.js` — Añadido campo modalidad, endpoint /api/actividades/{id}/stats mejorado
+
+### Documentación (2 NUEVOS ARCHIVOS)
+- `README.md` — Guía completa de uso y instalación con instrucciones PowerShell
+- `FUNCIONALIDADES_COMPLETADAS.md` — Documentación detallada de todas las features
+- `PROMPTS_COMPLETADOS.md` — Este archivo (historial de prompts completados)
+
+## 🎯 Funcionalidades Finales Implementadas
+
+### Para Estudiantes
+✅ Registro con email @alumnos.ufv.es  
+✅ Catálogo con búsqueda y filtros avanzados  
+✅ Modal con detalles completos de actividades  
+✅ Inscribirse/Darse de baja con confirmación  
+✅ Ver mis inscripciones  
+✅ Seguimiento de progreso ECTS  
+✅ Notificaciones de acciones  
+
+### Para Administradores
+✅ Registro con email @ufv.es  
+✅ Crear nuevas actividades  
+✅ Editar y eliminar actividades  
+✅ Ver listado de inscritos  
+✅ Estadísticas de plazas disponibles  
+✅ Seguimiento de actividades propias  
+
+### Características Generales
+✅ Tema visual profesional UFV  
+✅ Logo integrado en todas las páginas  
+✅ Diseño responsive (móvil, tablet, desktop)  
+✅ Animaciones suaves  
+✅ Sistema de notificaciones  
+✅ Navegación dinámica por rol  
+✅ Base de datos SQLite persistente  
+✅ API REST completa  
+✅ Seguridad (contraseñas hasheadas)  
+
+## 🚀 Cómo Usar (Usuarios Finales)
+
+### Iniciar la Aplicación
+```powershell
+npm install
+npm start
+```
+
+Acceder a: http://localhost:3000
+
+### Crear Cuenta Estudiante
+1. Registrarse con email @alumnos.ufv.es
+2. Explorar catálogo
+3. Inscribirse en actividades
+4. Ver mi progreso
+
+### Crear Cuenta Admin
+1. Registrarse con email @ufv.es
+2. Acceder a Panel Admin
+3. Crear/editar/eliminar actividades
 
 ---
 
-**Última actualización:** 9 de Noviembre de 2025  
-**Estado:** ✅ Portal funcional en demo local  
-**Usuarios en WiFi:** ✅ Compatible (acceso vía IP local)
+**Última actualización:** 12 de Noviembre de 2025  
+**Estado:** ✅ Aplicación completa y funcional  
+**Versión:** 1.0 - Release Candidate

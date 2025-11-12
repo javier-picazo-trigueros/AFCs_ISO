@@ -58,6 +58,7 @@ db.serialize(()=>{
     ects INTEGER DEFAULT 0,
     fecha_inicio TEXT,
     fecha_fin TEXT,
+    modalidad TEXT DEFAULT 'Presencial',
     max_inscritos INTEGER DEFAULT 50,
     created_by INTEGER,
     created_at TEXT DEFAULT (datetime('now')),
@@ -80,10 +81,14 @@ db.serialize(()=>{
   db.get('SELECT COUNT(*) as c FROM actividades', (err,row)=>{
     if(err) return console.error(err);
     if(row.c === 0){
-      const stmt = db.prepare('INSERT INTO actividades (nombre,descripcion,ects,fecha_inicio,fecha_fin,max_inscritos) VALUES (?,?,?,?,?,?)');
-      stmt.run('Voluntariado UFV Solidaria','Actividad de voluntariado social',2,'2025-02-20','2025-02-22',30);
-      stmt.run('Seminario de Innovación Social','Seminario sobre innovación social y emprendimiento',2,'2025-03-12','2025-03-14',25);
-      stmt.run('Taller de Liderazgo','Taller práctico de habilidades de liderazgo',1,'2025-04-10','2025-04-11',20);
+      const stmt = db.prepare('INSERT INTO actividades (nombre,descripcion,ects,fecha_inicio,fecha_fin,modalidad,max_inscritos) VALUES (?,?,?,?,?,?,?)');
+  stmt.run('Voluntariado UFV Solidaria','Actividad de voluntariado social. Únete a nuestro equipo para ayudar a la comunidad.',2,'2025-02-20','2025-02-22','Presencial',30);
+  stmt.run('Seminario de Innovación Social','Seminario sobre innovación social y emprendimiento. Aprende nuevas formas de hacer negocios.',2,'2025-03-12','2025-03-14','Híbrido',25);
+  stmt.run('Taller de Liderazgo','Taller práctico de habilidades de liderazgo. Desarrolla tus capacidades.',1,'2025-04-10','2025-04-11','Presencial',20);
+  stmt.run('Taller de Fotografía Creativa','Aprende técnicas de fotografía móvil y composición. Crea contenido visual impactante.',1,'2025-05-05','2025-05-06','Presencial',20);
+  stmt.run('Curso de Programación Básica','Introducción a la programación en Python. Aprende los fundamentos del código.',3,'2025-06-01','2025-06-15','Online',40);
+  stmt.run('Club de Debate','Sesiones semanales de debate y oratoria. Mejora tus habilidades de comunicación.',1,'2025-04-20','2025-06-20','Presencial',30);
+  stmt.run('Equipo de Fútbol Sala','Entrenamientos y torneos internos. Diviértete jugando.',1,'2025-02-01','2025-12-15','Presencial',25);
       stmt.finalize();
       console.log('Actividades de demo insertadas en la DB');
     }
@@ -99,32 +104,51 @@ app.get('/api/health', (req,res)=>{
   res.json({status:'ok', timestamp: new Date().toISOString()});
 });
 
-// API: listar inscripciones
+// API: listar inscripciones (por usuario o todas si admin)
 app.get('/api/inscripciones',(req,res)=>{
-  db.all('SELECT * FROM inscripciones ORDER BY id DESC', (err,rows)=>{
-    if(err) return res.status(500).json({error:err.message});
-    res.json(rows);
-  });
+  const userId = req.query.user_id ? Number(req.query.user_id) : null;
+  if(userId){
+    db.all(`SELECT ia.id as inscripcion_id, a.id as actividad_id, a.nombre, a.ects, a.fecha_inicio, a.fecha_fin, ia.inscrito_en
+            FROM inscripcion_actividades ia
+            JOIN actividades a ON ia.actividad_id = a.id
+            WHERE ia.user_id = ?
+            ORDER BY ia.inscrito_en DESC`, [userId], (err,rows)=>{
+      if(err) return res.status(500).json({error:err.message});
+      res.json(rows);
+    });
+  } else {
+    // retornar todas las inscripciones (admin/report)
+    db.all(`SELECT ia.id as inscripcion_id, ia.user_id, a.id as actividad_id, a.nombre, ia.inscrito_en
+            FROM inscripcion_actividades ia
+            LEFT JOIN actividades a ON ia.actividad_id = a.id
+            ORDER BY ia.inscrito_en DESC`, (err,rows)=>{
+      if(err) return res.status(500).json({error:err.message});
+      res.json(rows);
+    });
+  }
 });
 
-// API: eliminar inscripción
+// API: eliminar inscripción (usuario) - requiere ownership check opcional
 app.delete('/api/inscripciones/:id',(req,res)=>{
   const id = Number(req.params.id);
-  db.run('DELETE FROM inscripciones WHERE id = ?', id, function(err){
-    if(err) return res.status(500).json({error:err.message});
-    if(this.changes === 0) return res.status(404).json({error:'No encontrado'});
-    res.json({ok:true});
-  });
-});
-
-// API: crear inscripción (ejemplo)
-app.post('/api/inscripciones',(req,res)=>{
-  const {nombre,ects,fecha,status} = req.body;
-  if(!nombre) return res.status(400).json({error:'nombre requerido'});
-  db.run('INSERT INTO inscripciones (nombre,ects,fecha,status) VALUES (?,?,?,?)', [nombre,ects||0,fecha||'',status||'pendiente'], function(err){
-    if(err) return res.status(500).json({error:err.message});
-    res.status(201).json({id:this.lastID});
-  });
+  const userId = req.body && req.body.user_id ? Number(req.body.user_id) : null;
+  if(userId){
+    db.get('SELECT user_id FROM inscripcion_actividades WHERE id = ?', [id], (err,row)=>{
+      if(err) return res.status(500).json({error:err.message});
+      if(!row) return res.status(404).json({error:'No encontrado'});
+      if(row.user_id !== userId) return res.status(403).json({error:'No autorizado'});
+      db.run('DELETE FROM inscripcion_actividades WHERE id = ?', [id], function(err2){
+        if(err2) return res.status(500).json({error:err2.message});
+        res.json({ok:true});
+      });
+    });
+  } else {
+    db.run('DELETE FROM inscripcion_actividades WHERE id = ?', [id], function(err){
+      if(err) return res.status(500).json({error:err.message});
+      if(this.changes === 0) return res.status(404).json({error:'No encontrado'});
+      res.json({ok:true});
+    });
+  }
 });
 
 // API: registrar usuario alumno
@@ -148,6 +172,24 @@ app.post('/api/users', async (req,res)=>{
         if(err2) return res.status(500).json({error:err2.message});
         res.status(201).json({id:this.lastID, email: email.toLowerCase()});
       });
+    });
+  }catch(e){
+    console.error(e);
+    res.status(500).json({error:'error interno'});
+  }
+});
+
+// API: login usuario (estudiante)
+app.post('/api/users/login', async (req,res)=>{
+  try{
+    const {email,password} = req.body || {};
+    if(!email || !password) return res.status(400).json({error:'email y password requeridos'});
+    db.get('SELECT * FROM users WHERE email = ?', [email.toLowerCase()], (err,row)=>{
+      if(err) return res.status(500).json({error:err.message});
+      if(!row) return res.status(401).json({error:'Usuario no encontrado'});
+      const match = bcrypt.compareSync(password, row.password_hash);
+      if(!match) return res.status(401).json({error:'Contraseña incorrecta'});
+      res.json({id:row.id, email: row.email, nombre: row.nombre});
     });
   }catch(e){
     console.error(e);
@@ -261,16 +303,58 @@ app.get('/api/actividades/:id/stats',(req,res)=>{
   });
 });
 
+// API: progreso del usuario
+app.get('/api/users/:id/progreso', (req, res) => {
+    const userId = Number(req.params.id);
+    if (!userId) return res.status(400).json({ error: 'ID de usuario requerido' });
+
+    // Asumimos que el status 'completado' significa que los ECTS están ganados.
+    const sql = `
+        SELECT 
+            a.id,
+            a.nombre,
+            a.descripcion,
+            a.ects,
+            a.fecha_fin
+        FROM inscripcion_actividades ia
+        JOIN actividades a ON ia.actividad_id = a.id
+        WHERE ia.user_id = ? AND ia.status = 'completado'
+    `;
+
+    db.all(sql, [userId], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        
+        const totalEcts = rows.reduce((sum, act) => sum + (act.ects || 0), 0);
+        
+        res.json({
+            actividadesCompletadas: rows,
+            totalEcts: totalEcts
+        });
+    });
+});
+
 // API: inscribir usuario a actividad
-app.post('/api/inscribir',(req,res)=>{
-  const {user_id, actividad_id} = req.body;
+app.post('/api/inscribir', (req,res)=>{
+  const {user_id, actividad_id} = req.body || {};
   if(!user_id || !actividad_id) return res.status(400).json({error:'user_id y actividad_id requeridos'});
-  db.run('INSERT INTO inscripcion_actividades (user_id, actividad_id) VALUES (?,?)', [user_id, actividad_id], function(err){
-    if(err){
-      if(err.message.includes('UNIQUE')) return res.status(409).json({error:'Ya estás inscrito'});
-      return res.status(500).json({error:err.message});
-    }
-    res.status(201).json({id:this.lastID});
+  // Comprobar capacidad
+  db.get('SELECT max_inscritos FROM actividades WHERE id = ?', [actividad_id], (err,act)=>{
+    if(err) return res.status(500).json({error:err.message});
+    if(!act) return res.status(404).json({error:'Actividad no encontrada'});
+    db.get('SELECT COUNT(*) as c FROM inscripcion_actividades WHERE actividad_id = ?', [actividad_id], (err2,row)=>{
+      if(err2) return res.status(500).json({error:err2.message});
+      const inscritos = row.c || 0;
+      if(inscritos >= act.max_inscritos) return res.status(409).json({error:'Actividad completa'});
+      // Intentar insertar
+      db.run('INSERT INTO inscripcion_actividades (user_id, actividad_id) VALUES (?,?)', [user_id, actividad_id], function(err3){
+        if(err3){
+          if(err3.message && err3.message.includes('UNIQUE')) return res.status(409).json({error:'Ya estás inscrito'});
+          return res.status(500).json({error:err3.message});
+        }
+        const nuevosInscritos = inscritos + 1;
+        res.status(201).json({id:this.lastID, inscritos: nuevosInscritos, disponibles: Math.max(0, act.max_inscritos - nuevosInscritos)});
+      });
+    });
   });
 });
 

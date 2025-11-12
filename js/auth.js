@@ -51,6 +51,82 @@ async function submitForm(e){
 }
 
 window.addEventListener('DOMContentLoaded', ()=>{
-  const form = document.getElementById('register-form');
-  if(form) form.addEventListener('submit', submitForm);
+  // Seleccionar los IDs correctos para el formulario de registro
+  const registerForm = document.getElementById('register-form');
+  const registerNombreInput = document.getElementById('register-nombre');
+  const registerEmailInput = document.getElementById('register-email');
+  const registerPasswordInput = document.getElementById('register-password');
+  const registerPasswordConfirmInput = document.getElementById('register-password-confirm');
+
+  if (registerForm) {
+      registerForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const nombre = registerNombreInput.value;
+          const email = registerEmailInput.value;
+          const password = registerPasswordInput.value;
+          const passwordConfirm = registerPasswordConfirmInput.value;
+
+          if (password !== passwordConfirm) {
+              alert('Las contraseñas no coinciden.');
+              return;
+          }
+          if (!email.endsWith('@alumnos.ufv.es')) {
+              alert('El email debe ser del dominio @alumnos.ufv.es');
+              return;
+          }
+
+          try {
+              const response = await fetch('/api/users', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ nombre, email, password })
+              });
+              const data = await response.json();
+              if (!response.ok) {
+                  throw new Error(data.error || 'Error al crear la cuenta.');
+              }
+              alert('¡Cuenta creada con éxito! Ahora puedes iniciar sesión.');
+              // Opcional: cambiar a la vista de login automáticamente
+              document.getElementById('show-login').click();
+          } catch (error) {
+              console.error('Error en el registro:', error);
+              alert(error.message);
+          }
+      });
+  }
+
+  // Seleccionar los IDs correctos para el formulario de login
+  const loginForm = document.getElementById('login-form');
+  const loginEmailInput = document.getElementById('login-email');
+  const loginPasswordInput = document.getElementById('login-password');
+
+  if (loginForm) {
+      loginForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const email = loginEmailInput.value;
+          const password = loginPasswordInput.value;
+
+          try {
+              const response = await fetch('/api/users/login', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ email, password })
+              });
+              const data = await response.json();
+              if (!response.ok) {
+                  throw new Error(data.error || 'Email o contraseña incorrectos.');
+              }
+              
+              // Guardar datos del usuario en localStorage
+              localStorage.setItem('user', JSON.stringify(data));
+              
+              // Redirigir al catálogo o al dashboard
+              window.location.href = 'catalogo.html';
+
+          } catch (error) {
+              console.error('Error en el login:', error);
+              alert(error.message);
+          }
+      });
+  }
 });

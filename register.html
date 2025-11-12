@@ -1,48 +1,119 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Crear cuenta – AFcS Portal</title>
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro y Login - AFCs UFV</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="https://www.ufv.es/wp-content/uploads/2020/01/cropped-favicon-32x32.png">
+    <style>
+        .auth-toggle {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        .auth-toggle a {
+            color: var(--ufv-secondary-blue);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .auth-toggle a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-<header class="site-header">
-  <div class="container">
-    <h1 class="brand">AFcS <span class="muted">Portal</span></h1>
-  </div>
-</header>
-<nav>
-  <a href="dashboard.html">🏠 Inicio</a>
-  <a href="catalogo.html">🗂️ Catálogo</a>
-  <a href="progreso.html">🎓 Mi progreso</a>
-  <a href="inscripciones.html">📝 Mis inscripciones</a>
-  <a href="register.html">🔐 Crear cuenta</a>
-</nav>
-<main>
-  <div class="card" style="max-width:480px;margin:auto;">
-    <form id="register-form">
-      <label>Nombre (opcional)<br>
-        <input type="text" name="nombre" id="nombre" placeholder="Tu nombre" style="width:100%;padding:8px;margin-top:6px;border-radius:4px;border:1px solid #ccc">
-      </label>
-      <label style="display:block;margin-top:12px">Email institucional (@alumnos.ufv.es)<br>
-        <input type="email" name="email" id="email" required placeholder="usuario@alumnos.ufv.es" style="width:100%;padding:8px;margin-top:6px;border-radius:4px;border:1px solid #ccc">
-      </label>
-      <label style="display:block;margin-top:12px">Contraseña<br>
-        <input type="password" name="password" id="password" required placeholder="mínimo 6 caracteres" style="width:100%;padding:8px;margin-top:6px;border-radius:4px;border:1px solid #ccc">
-      </label>
-      <label style="display:block;margin-top:12px">Confirmar contraseña<br>
-        <input type="password" name="password2" id="password2" required placeholder="repite la contraseña" style="width:100%;padding:8px;margin-top:6px;border-radius:4px;border:1px solid #ccc">
-      </label>
+    <header>
+        <div class="logo">
+            <img src="img/logo-ufv.jpg" alt="Logo UFV">
+            <span>AFCs UFV</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li data-auth="guest-only"><a href="register.html" class="active">Registro/Login</a></li>
+                <li data-auth="user-only"><a href="catalogo.html">Catálogo</a></li>
+                <li data-auth="user-only"><a href="inscripciones.html">Mis Inscripciones</a></li>
+                <li data-auth="user-only"><a href="progreso.html">Mi Progreso</a></li>
+                <li data-auth="admin-only"><a href="admin-panel.html">Panel Admin</a></li>
+                <li data-auth="user-only" id="logout-li"><a href="#" id="logout-link">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
 
-      <div id="form-error" class="note" style="margin-top:10px;color:#c0392b"></div>
+    <div class="container">
+        
+        <!-- Formulario de Registro -->
+        <div id="register-form-container">
+            <div class="form-container">
+                <h1>Crear Cuenta de Alumno</h1>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="register-nombre">Nombre (opcional)</label>
+                        <input type="text" id="register-nombre" placeholder="Tu nombre y apellidos">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email Institucional (@alumnos.ufv.es)</label>
+                        <input type="email" id="register-email" required placeholder="usuario@alumnos.ufv.es">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Contraseña</label>
+                        <input type="password" id="register-password" required placeholder="Mínimo 6 caracteres">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password-confirm">Confirmar Contraseña</label>
+                        <input type="password" id="register-password-confirm" required placeholder="Repite la contraseña">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Crear Cuenta</button>
+                </form>
+                <div class="auth-toggle">
+                    <p class="note">¿Ya tienes una cuenta? <a href="#" id="show-login">Inicia sesión aquí</a>.</p>
+                </div>
+            </div>
+        </div>
 
-      <div style="margin-top:14px">
-        <button type="submit">Crear cuenta</button>
-      </div>
-    </form>
-  </div>
-</main>
-<script src="js/auth.js" defer></script>
+        <!-- Formulario de Login -->
+        <div id="login-form-container" style="display: none;">
+            <div class="form-container">
+                <h1>Iniciar Sesión</h1>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email Institucional</label>
+                        <input type="email" id="login-email" required placeholder="usuario@alumnos.ufv.es">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Contraseña</label>
+                        <input type="password" id="login-password" required placeholder="Tu contraseña">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Iniciar Sesión</button>
+                </form>
+                <div class="auth-toggle">
+                    <p class="note">¿No tienes una cuenta? <a href="#" id="show-register">Crea una aquí</a>.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/nav.js"></script>
+    <script>
+        // Lógica para alternar entre formularios
+        const registerContainer = document.getElementById('register-form-container');
+        const loginContainer = document.getElementById('login-form-container');
+        const showLoginLink = document.getElementById('show-login');
+        const showRegisterLink = document.getElementById('show-register');
+
+        showLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            registerContainer.style.display = 'none';
+            loginContainer.style.display = 'block';
+        });
+
+        showRegisterLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginContainer.style.display = 'none';
+            registerContainer.style.display = 'block';
+        });
+    </script>
 </body>
 </html>
