@@ -1,0 +1,8 @@
+node_modules/
+db/*.db
+*.log
+dist/
+build/
+*.env
+/.vercel
+/.fly

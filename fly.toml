@@ -1,0 +1,16 @@
+[app]
+# Replace `app = "afcs-iso"` with the app name you choose when running `fly launch`
+app = "afcs-iso"
+kill_signal = "SIGINT"
+kill_timeout = 5
+processes = []
+
+[build]
+  image = "node:18"
+
+[[mounts]]
+  source = "db"
+  destination = "/app/db"
+
+[env]
+  PORT = "3000"

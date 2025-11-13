@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "https://<YOUR-FLY-APP>.fly.dev/api/$1" }
+  ]
+}

@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
+const cors = require('cors');
 
 const DB_DIR = path.join(__dirname,'db');
 if(!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR);
@@ -97,6 +98,7 @@ db.serialize(()=>{
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 app.use(express.static(path.join(__dirname)));
 
 // Health check endpoint

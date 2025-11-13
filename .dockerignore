@@ -1,0 +1,11 @@
+node_modules
+npm-debug.log
+.git
+*.md
+*.sqlite
+db/*.db
+package-lock.json
+venv
+dist
+build
+*.log
