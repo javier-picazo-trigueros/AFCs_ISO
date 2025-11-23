@@ -129,14 +129,14 @@ Si quieres usar una cuenta preexistente:
 
 ### Estudiante Demo:
 ```
-Email: estudiante@alumnos.ufv.es
-Contraseña: demo123
+Email: alumno@alumnos.ufv.es
+Contraseña: 123456
 ```
 
 ### Admin Demo:
 ```
-Email: admin@ufv.es
-Contraseña: admin123
+Email: director@ufv.es
+Contraseña: 123456
 ```
 
 ---
