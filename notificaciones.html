@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificaciones - AFCs UFV</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="https://www.ufv.es/wp-content/uploads/2020/01/cropped-favicon-32x32.png">
+    <style>
+        .notification-banner {
+            background: var(--ufv-success);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .notification-banner button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .notification-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--ufv-gray);
+        }
+        .notification-tabs button {
+            padding: 1rem;
+            background: none;
+            border: none;
+            color: var(--ufv-text-light);
+            cursor: pointer;
+            font-size: 1rem;
+            position: relative;
+            transition: all 0.3s;
+        }
+        .notification-tabs button.active {
+            color: var(--ufv-blue);
+            font-weight: 600;
+        }
+        .notification-tabs button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--ufv-blue);
+        }
+        .notification-item {
+            background: white;
+            border-left: 4px solid var(--ufv-secondary-blue);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            transition: all 0.3s;
+        }
+        .notification-item.unread {
+            background: #f0f6ff;
+            border-left-color: var(--ufv-blue);
+        }
+        .notification-item.info {
+            border-left-color: #0055A4;
+        }
+        .notification-item.success {
+            border-left-color: var(--ufv-success);
+        }
+        .notification-item.warning {
+            border-left-color: #ff9800;
+        }
+        .notification-item.error {
+            border-left-color: #f44336;
+        }
+        .notification-content {
+            flex: 1;
+        }
+        .notification-title {
+            font-weight: 600;
+            color: var(--ufv-blue);
+            margin-bottom: 0.5rem;
+        }
+        .notification-description {
+            color: var(--ufv-text-light);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+        .notification-time {
+            color: #999;
+            font-size: 0.85rem;
+        }
+        .notification-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: 1rem;
+        }
+        .notification-actions button {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+        .notification-actions button:hover {
+            color: var(--ufv-blue);
+        }
+        .notification-empty {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--ufv-text-light);
+        }
+        .notification-empty strong {
+            display: block;
+            font-size: 1.2rem;
+            color: var(--ufv-text);
+            margin-bottom: 0.5rem;
+        }
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .filter-buttons button {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--ufv-gray);
+            background: white;
+            color: var(--ufv-text);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        .filter-buttons button.active {
+            background: var(--ufv-secondary-blue);
+            color: white;
+            border-color: var(--ufv-secondary-blue);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="img/logo-ufv.jpg" alt="Logo UFV">
+            <span>AFCs UFV</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li data-auth="guest-only"><a href="register.html">Registro/Login</a></li>
+                <li data-auth="user-only"><a href="catalogo.html">Catálogo</a></li>
+                <li data-auth="user-only"><a href="inscripciones.html">Mis Inscripciones</a></li>
+                <li data-auth="user-only"><a href="progreso.html">Mi Progreso</a></li>
+                <li data-auth="user-only"><a href="notificaciones.html" class="active">Notificaciones</a></li>
+                <li data-auth="admin-only"><a href="admin-panel.html">Panel Admin</a></li>
+                <li data-auth="user-only" id="logout-li"><a href="#" id="logout-link">Cerrar Sesión</a></li>
+                <li><a href="help-support.html">❓ Ayuda</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1 style="color: var(--ufv-blue); margin-bottom: 2rem;">📬 Centro de Notificaciones</h1>
+        
+        <!-- Banner de notificaciones no leídas -->
+        <div id="notification-banner" class="notification-banner" style="display: none;">
+            <span>Tienes <strong id="unread-count">0</strong> notificación(es) sin leer</span>
+            <button onclick="markAllAsRead()">Marcar como leído</button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="notification-tabs">
+            <button class="active" onclick="filterNotifications('todas', this)">📨 Todas</button>
+            <button onclick="filterNotifications('no-leidas', this)">🔔 Sin leer</button>
+            <button onclick="filterNotifications('inscripciones', this)">📝 Inscripciones</button>
+            <button onclick="filterNotifications('progreso', this)">📊 Progreso</button>
+            <button onclick="filterNotifications('sistema', this)">⚙️ Sistema</button>
+        </div>
+
+        <!-- Lista de notificaciones -->
+        <div id="notifications-container"></div>
+    </div>
+
+    <script src="js/nav.js"></script>
+    <script>
+        // Estructura de datos de notificaciones
+        const notificationsData = [
+            {
+                id: 1,
+                type: 'success',
+                category: 'inscripciones',
+                title: '✓ Inscripción confirmada',
+                description: 'Te has inscrito correctamente en "Seminario de Emprendimiento"',
+                time: '2025-01-23 14:30',
+                read: false
+            },
+            {
+                id: 2,
+                type: 'info',
+                category: 'progreso',
+                title: 'Progreso actualizado',
+                description: 'Tu asistencia a "Seminario de Emprendimiento" ha sido registrada. +3 ECTS',
+                time: '2025-01-23 12:00',
+                read: false
+            },
+            {
+                id: 3,
+                type: 'info',
+                category: 'sistema',
+                title: 'Nueva actividad disponible',
+                description: 'Se ha añadido una nueva actividad: "Taller de Liderazgo". ¡Echa un vistazo!',
+                time: '2025-01-22 10:15',
+                read: false
+            },
+            {
+                id: 4,
+                type: 'warning',
+                category: 'inscripciones',
+                title: '⏰ Último lugar disponible',
+                description: 'Queda 1 lugar en "Voluntariado Comunitario". La inscripción cierra mañana.',
+                time: '2025-01-22 08:45',
+                read: true
+            },
+            {
+                id: 5,
+                type: 'success',
+                category: 'progreso',
+                title: '🎉 Meta alcanzada',
+                description: 'Has acumulado 6 ECTS. ¡Va a mitad de camino hacia los 12!',
+                time: '2025-01-21 16:20',
+                read: true
+            },
+            {
+                id: 6,
+                type: 'info',
+                category: 'progreso',
+                title: 'Recordatorio ECTS',
+                description: 'Necesitas acumular 6 ECTS más antes del final del semestre.',
+                time: '2025-01-20 09:00',
+                read: true
+            },
+            {
+                id: 7,
+                type: 'info',
+                category: 'inscripciones',
+                title: 'Inscripción cancelada',
+                description: 'Tu inscripción en "Taller de Diseño" ha sido cancelada según tu solicitud.',
+                time: '2025-01-19 11:30',
+                read: true
+            },
+            {
+                id: 8,
+                type: 'success',
+                category: 'sistema',
+                title: 'Cuota ECTS registrada',
+                description: 'Las 3 ECTS del "Seminario de Liderazgo" han sido confirmadas en tu expediente.',
+                time: '2025-01-18 14:00',
+                read: true
+            }
+        ];
+
+        // Cargar notificaciones desde localStorage o usar datos por defecto
+        function loadNotifications() {
+            let stored = localStorage.getItem('notifications');
+            if (!stored) {
+                localStorage.setItem('notifications', JSON.stringify(notificationsData));
+                return notificationsData;
+            }
+            return JSON.parse(stored);
+        }
+
+        // Guardar notificaciones
+        function saveNotifications(notifications) {
+            localStorage.setItem('notifications', JSON.stringify(notifications));
+        }
+
+        // Renderizar notificaciones
+        function renderNotifications(category = 'todas') {
+            let notifications = loadNotifications();
+
+            if (category === 'no-leidas') {
+                notifications = notifications.filter(n => !n.read);
+            } else if (category !== 'todas') {
+                notifications = notifications.filter(n => n.category === category);
+            }
+
+            const container = document.getElementById('notifications-container');
+            
+            if (notifications.length === 0) {
+                container.innerHTML = `
+                    <div class="notification-empty">
+                        <strong>No hay notificaciones</strong>
+                        <p>No tienes notificaciones para mostrar en esta categoría.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = notifications.map(notif => `
+                <div class="notification-item ${notif.read ? '' : 'unread'} ${notif.type}" data-id="${notif.id}">
+                    <div class="notification-content">
+                        <div class="notification-title">${notif.title}</div>
+                        <div class="notification-description">${notif.description}</div>
+                        <div class="notification-time">${formatTime(notif.time)}</div>
+                    </div>
+                    <div class="notification-actions">
+                        <button onclick="markAsRead(${notif.id})" title="${notif.read ? 'Marcar como no leído' : 'Marcar como leído'}">
+                            ${notif.read ? '✓' : '●'}
+                        </button>
+                        <button onclick="deleteNotification(${notif.id})" title="Eliminar">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+
+            updateUnreadCount();
+        }
+
+        // Marcar como leído
+        function markAsRead(id) {
+            let notifications = loadNotifications();
+            const notif = notifications.find(n => n.id === id);
+            if (notif) {
+                notif.read = !notif.read;
+                saveNotifications(notifications);
+                renderNotifications('todas');
+            }
+        }
+
+        // Marcar todo como leído
+        function markAllAsRead() {
+            let notifications = loadNotifications();
+            notifications = notifications.map(n => ({...n, read: true}));
+            saveNotifications(notifications);
+            renderNotifications('todas');
+        }
+
+        // Eliminar notificación
+        function deleteNotification(id) {
+            let notifications = loadNotifications();
+            notifications = notifications.filter(n => n.id !== id);
+            saveNotifications(notifications);
+            renderNotifications('todas');
+        }
+
+        // Actualizar contador de no leídos
+        function updateUnreadCount() {
+            const notifications = loadNotifications();
+            const unreadCount = notifications.filter(n => !n.read).length;
+            const banner = document.getElementById('notification-banner');
+            
+            if (unreadCount > 0) {
+                document.getElementById('unread-count').textContent = unreadCount;
+                banner.style.display = 'flex';
+            } else {
+                banner.style.display = 'none';
+            }
+        }
+
+        // Filtrar notificaciones
+        function filterNotifications(category, btn) {
+            document.querySelectorAll('.notification-tabs button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderNotifications(category);
+        }
+
+        // Formatear tiempo
+        function formatTime(datetimeStr) {
+            const date = new Date(datetimeStr);
+            const now = new Date();
+            const diff = now - date;
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+
+            if (minutes < 1) return 'Hace unos segundos';
+            if (minutes < 60) return `Hace ${minutes}m`;
+            if (hours < 24) return `Hace ${hours}h`;
+            if (days < 7) return `Hace ${days}d`;
+            
+            return date.toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Inicializar
+        window.addEventListener('DOMContentLoaded', () => {
+            renderNotifications('todas');
+            updateUnreadCount();
+
+            // Simulación: agregar notificación cada 5 minutos (para testing)
+            // setInterval(() => {
+            //     addNewNotification({
+            //         type: 'info',
+            //         category: 'sistema',
+            //         title: 'Nueva notificación',
+            //         description: 'Esto es una notificación de prueba',
+            //         time: new Date().toISOString()
+            //     });
+            // }, 5 * 60 * 1000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Público - AFCs UFV</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="https://www.ufv.es/wp-content/uploads/2020/01/cropped-favicon-32x32.png">
+    <style>
+        .guest-banner {
+            background: linear-gradient(135deg, var(--ufv-secondary-blue), #0055A4);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .guest-banner h2 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.5rem;
+        }
+        .guest-banner p {
+            margin: 0.5rem 0;
+            font-size: 0.95rem;
+        }
+        .enrollment-badge {
+            display: inline-block;
+            background: var(--ufv-success);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+        .activity-card-guest {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--ufv-secondary-blue);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+        .activity-card-guest:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .activity-info {
+            flex: 1;
+        }
+        .activity-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .activity-title {
+            font-weight: 600;
+            color: var(--ufv-blue);
+            font-size: 1.1rem;
+        }
+        .activity-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin: 0.75rem 0;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+            color: var(--ufv-text-light);
+        }
+        .activity-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .activity-description {
+            color: var(--ufv-text-light);
+            margin: 1rem 0;
+            line-height: 1.5;
+        }
+        .activity-ects {
+            display: inline-block;
+            background: var(--ufv-success);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .btn-enroll {
+            align-self: flex-start;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="img/logo-ufv.jpg" alt="Logo UFV">
+            <span>AFCs UFV - Acceso Público</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="register.html">Registro/Login</a></li>
+                <li><a href="help-support.html">❓ Ayuda</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Banner de bienvenida -->
+        <div class="guest-banner">
+            <h2>👋 Bienvenido al Catálogo de AFCs</h2>
+            <p>Exploración de Actividades Formativas Complementarias de la UFV</p>
+            <p style="font-size: 0.9rem; margin-top: 1rem;">Para inscribirte en actividades, completa el formulario de invitado.</p>
+        </div>
+
+        <!-- Buscar y filtrar -->
+        <div style="background: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: var(--shadow);">
+            <h3 style="color: var(--ufv-blue); margin-top: 0;">🔍 Buscar Actividades</h3>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <input type="text" id="search-input" placeholder="Buscar por nombre o descripción..." 
+                       style="padding: 0.75rem; border: 1px solid var(--ufv-gray); border-radius: 8px;">
+                
+                <select id="filter-category" style="padding: 0.75rem; border: 1px solid var(--ufv-gray); border-radius: 8px;">
+                    <option value="">Todas las categorías</option>
+                    <option value="seminario">Seminario</option>
+                    <option value="taller">Taller</option>
+                    <option value="voluntariado">Voluntariado</option>
+                    <option value="deporte">Deporte</option>
+                    <option value="conferencia">Conferencia</option>
+                    <option value="otro">Otro</option>
+                </select>
+            </div>
+
+            <button class="btn btn-secondary" onclick="resetFilters()" style="font-size: 0.9rem;">Limpiar filtros</button>
+        </div>
+
+        <!-- Estadísticas -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+            <div class="card">
+                <strong style="color: var(--ufv-blue); font-size: 1.2rem;" id="total-activities">0</strong>
+                <p style="margin: 0; color: var(--ufv-text-light);">Actividades disponibles</p>
+            </div>
+            <div class="card">
+                <strong style="color: var(--ufv-success); font-size: 1.2rem;" id="total-enrolled">0</strong>
+                <p style="margin: 0; color: var(--ufv-text-light);">Invitados inscritos</p>
+            </div>
+            <div class="card">
+                <strong style="color: var(--ufv-secondary-blue); font-size: 1.2rem;" id="avg-ects">0</strong>
+                <p style="margin: 0; color: var(--ufv-text-light);">Promedio ECTS</p>
+            </div>
+        </div>
+
+        <!-- Listado de actividades -->
+        <div id="activities-list" style="margin-bottom: 3rem;"></div>
+
+        <!-- Modal de inscripción para invitados -->
+        <div id="guest-enrollment-modal" class="modal" style="display: none;">
+            <div class="modal-content" style="max-width: 500px;">
+                <div class="modal-header">
+                    <h2 id="modal-activity-title">Inscripción - Actividad</h2>
+                    <button onclick="closeGuestEnrollmentModal()" class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p id="modal-activity-description" style="color: var(--ufv-text-light); margin-bottom: 1.5rem;"></p>
+                    
+                    <form id="guest-form">
+                        <div class="form-group">
+                            <label for="guest-nombre">Nombre Completo *</label>
+                            <input type="text" id="guest-nombre" required placeholder="Tu nombre">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="guest-email">Email *</label>
+                            <input type="email" id="guest-email" required placeholder="tu.email@dominio.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="guest-telefono">Teléfono *</label>
+                            <input type="tel" id="guest-telefono" required placeholder="+34 600 000 000">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="guest-organizacion">Organización/Centro</label>
+                            <input type="text" id="guest-organizacion" placeholder="Ej: Otro centro educativo">
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="guest-terms" required> 
+                                Acepto los <a href="help-support.html" target="_blank">términos de servicio</a>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">✓ Confirmar Inscripción</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer style="background: var(--ufv-blue); color: white; padding: 2rem; text-align: center; margin-top: 3rem;">
+        <p>&copy; 2025 UFV - Actividades Formativas Complementarias</p>
+        <p style="font-size: 0.9rem; margin-top: 0.5rem;">
+            <a href="help-support.html" style="color: white; text-decoration: underline;">Ayuda</a> | 
+            <a href="#" style="color: white; text-decoration: underline;">Privacidad</a> | 
+            <a href="#" style="color: white; text-decoration: underline;">Términos</a>
+        </p>
+    </footer>
+
+    <script src="js/nav.js"></script>
+    <script>
+        // Datos de actividades (desde la API o localStorage)
+        let allActivities = [];
+        let selectedActivityForEnrollment = null;
+
+        // Cargar actividades
+        async function loadActivities() {
+            try {
+                const response = await fetch('/api/actividades');
+                if (!response.ok) throw new Error('No se pudo cargar catálogo');
+                
+                allActivities = await response.json();
+                renderActivities(allActivities);
+                updateStats();
+            } catch (error) {
+                console.error('Error:', error);
+                // Datos de demostración si la API falla
+                allActivities = [
+                    {
+                        id: 1,
+                        nombre: 'Seminario de Emprendimiento',
+                        descripcion: 'Aprende a crear tu propio negocio con expertos en emprendimiento. Se cubrirán temas de business plan, financiación y marketing.',
+                        categoria: 'seminario',
+                        ects: 3,
+                        fecha: '2025-02-10',
+                        hora: '17:00',
+                        lugar: 'Aula 301',
+                        aforo: 30,
+                        inscritos: 25
+                    },
+                    {
+                        id: 2,
+                        nombre: 'Taller de Liderazgo',
+                        descripcion: 'Desarrollo de habilidades de liderazgo y trabajo en equipo. Ejercicios prácticos y dinámicas de grupo.',
+                        categoria: 'taller',
+                        ects: 2,
+                        fecha: '2025-02-15',
+                        hora: '16:00',
+                        lugar: 'Sala de Conferencias',
+                        aforo: 25,
+                        inscritos: 18
+                    },
+                    {
+                        id: 3,
+                        nombre: 'Voluntariado Comunitario',
+                        descripcion: 'Participa en actividades de voluntariado social. Ayuda a comunidades locales en programas de integración.',
+                        categoria: 'voluntariado',
+                        ects: 4,
+                        fecha: '2025-02-20',
+                        hora: '09:00',
+                        lugar: 'Barrio de San Blas',
+                        aforo: 40,
+                        inscritos: 35
+                    },
+                    {
+                        id: 4,
+                        nombre: 'Torneo de Futsal',
+                        descripcion: 'Competición amistosa de futsal entre equipos de estudiantes. Incluye entrenamiento previo.',
+                        categoria: 'deporte',
+                        ects: 2,
+                        fecha: '2025-02-22',
+                        hora: '18:00',
+                        lugar: 'Pabellón Deportivo',
+                        aforo: 60,
+                        inscritos: 52
+                    },
+                    {
+                        id: 5,
+                        nombre: 'Conferencia: Futuro del Trabajo Remoto',
+                        descripcion: 'Charla con expertos sobre tendencias en trabajo remoto y flexibilidad laboral. Q&A incluido.',
+                        categoria: 'conferencia',
+                        ects: 1,
+                        fecha: '2025-02-25',
+                        hora: '19:00',
+                        lugar: 'Auditorio Principal',
+                        aforo: 150,
+                        inscritos: 89
+                    }
+                ];
+                renderActivities(allActivities);
+                updateStats();
+            }
+        }
+
+        // Renderizar actividades
+        function renderActivities(activities) {
+            const container = document.getElementById('activities-list');
+            
+            if (activities.length === 0) {
+                container.innerHTML = '<div class="note" style="text-align: center;">No se encontraron actividades con esos filtros.</div>';
+                return;
+            }
+
+            container.innerHTML = activities.map(activity => `
+                <div class="activity-card-guest">
+                    <div class="activity-info">
+                        <div class="activity-header">
+                            <div class="activity-title">${activity.nombre}</div>
+                            <span class="activity-ects">${activity.ects} ECTS</span>
+                        </div>
+                        
+                        <div class="activity-description">
+                            ${activity.descripcion}
+                        </div>
+
+                        <div class="activity-meta">
+                            <div class="activity-meta-item">📅 ${new Date(activity.fecha).toLocaleDateString('es-ES')}</div>
+                            <div class="activity-meta-item">⏰ ${activity.hora}</div>
+                            <div class="activity-meta-item">📍 ${activity.lugar}</div>
+                            <div class="activity-meta-item">👥 ${activity.inscritos}/${activity.aforo}</div>
+                        </div>
+
+                        <div>
+                            ${activity.inscritos >= activity.aforo 
+                                ? '<span class="enrollment-badge" style="background: #f44336;">LLENO</span>' 
+                                : '<span class="enrollment-badge" style="background: var(--ufv-success);">DISPONIBLE</span>'}
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-enroll" 
+                            ${activity.inscritos >= activity.aforo ? 'disabled' : ''}
+                            onclick="openGuestEnrollmentModal(${activity.id}, '${activity.nombre}', '${activity.descripcion}')">
+                        📝 Inscribirse
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Filtrar actividades
+        function filterActivities() {
+            const search = document.getElementById('search-input').value.toLowerCase();
+            const category = document.getElementById('filter-category').value;
+
+            let filtered = allActivities.filter(a => {
+                const matchSearch = a.nombre.toLowerCase().includes(search) || 
+                                   a.descripcion.toLowerCase().includes(search);
+                const matchCategory = !category || a.categoria === category;
+                return matchSearch && matchCategory;
+            });
+
+            renderActivities(filtered);
+        }
+
+        // Limpiar filtros
+        function resetFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('filter-category').value = '';
+            renderActivities(allActivities);
+        }
+
+        // Abrir modal de inscripción
+        function openGuestEnrollmentModal(activityId, activityName, activityDescription) {
+            selectedActivityForEnrollment = activityId;
+            document.getElementById('modal-activity-title').textContent = `Inscripción - ${activityName}`;
+            document.getElementById('modal-activity-description').textContent = activityDescription;
+            document.getElementById('guest-enrollment-modal').style.display = 'flex';
+            document.getElementById('guest-form').reset();
+        }
+
+        // Cerrar modal
+        function closeGuestEnrollmentModal() {
+            document.getElementById('guest-enrollment-modal').style.display = 'none';
+            document.getElementById('guest-form').reset();
+        }
+
+        // Enviar inscripción de invitado
+        document.getElementById('guest-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = {
+                nombre: document.getElementById('guest-nombre').value,
+                email: document.getElementById('guest-email').value,
+                telefono: document.getElementById('guest-telefono').value,
+                organizacion: document.getElementById('guest-organizacion').value || 'No especificada',
+                activity_id: selectedActivityForEnrollment,
+                enrolled_at: new Date().toISOString()
+            };
+
+            try {
+                // Guardar en localStorage
+                let guestEnrollments = JSON.parse(localStorage.getItem('guest_enrollments')) || [];
+                guestEnrollments.push(formData);
+                localStorage.setItem('guest_enrollments', JSON.stringify(guestEnrollments));
+
+                // Actualizar UI
+                const activity = allActivities.find(a => a.id === selectedActivityForEnrollment);
+                if (activity) {
+                    activity.inscritos++;
+                }
+                renderActivities(allActivities);
+                updateStats();
+
+                showNotification('✓ ¡Inscripción confirmada! Te enviaremos un email de confirmación.', 'success');
+                closeGuestEnrollmentModal();
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Error al inscribirse. Intenta de nuevo.', 'error');
+            }
+        });
+
+        // Mostrar notificación
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('hide');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            document.getElementById('total-activities').textContent = allActivities.length;
+            
+            const totalEnrolled = JSON.parse(localStorage.getItem('guest_enrollments') || '[]').length;
+            document.getElementById('total-enrolled').textContent = totalEnrolled;
+            
+            const avgEcts = allActivities.length > 0 
+                ? (allActivities.reduce((sum, a) => sum + a.ects, 0) / allActivities.length).toFixed(1)
+                : 0;
+            document.getElementById('avg-ects').textContent = avgEcts;
+        }
+
+        // Event listeners
+        document.getElementById('search-input').addEventListener('input', filterActivities);
+        document.getElementById('filter-category').addEventListener('change', filterActivities);
+
+        // Cerrar modal al hacer click fuera
+        document.getElementById('guest-enrollment-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'guest-enrollment-modal') {
+                closeGuestEnrollmentModal();
+            }
+        });
+
+        // Cargar actividades al iniciar
+        window.addEventListener('DOMContentLoaded', loadActivities);
+    </script>
+</body>
+</html>

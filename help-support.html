@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayuda y Soporte - AFCs UFV</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="https://www.ufv.es/wp-content/uploads/2020/01/cropped-favicon-32x32.png">
+    <style>
+        .tab-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .faq-item {
+            cursor: pointer;
+            user-select: none;
+        }
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+        }
+        .faq-answer {
+            display: none;
+            padding: 0 1rem 1rem 1rem;
+            border-top: 1px solid var(--ufv-gray);
+            color: var(--ufv-text-light);
+        }
+        .faq-item.open .faq-answer {
+            display: block;
+        }
+        .faq-icon {
+            transition: transform 0.3s ease;
+        }
+        .faq-item.open .faq-icon {
+            transform: rotate(180deg);
+        }
+        .contact-channels {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .contact-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        .contact-card h3 {
+            color: var(--ufv-blue);
+            margin-bottom: 0.5rem;
+        }
+        .contact-card p {
+            color: var(--ufv-text-light);
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+        .contact-card a {
+            display: inline-block;
+            margin-top: 1rem;
+        }
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .filter-buttons button {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--ufv-gray);
+            background: white;
+            color: var(--ufv-text);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        .filter-buttons button.active {
+            background: var(--ufv-secondary-blue);
+            color: white;
+            border-color: var(--ufv-secondary-blue);
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="img/logo-ufv.jpg" alt="Logo UFV">
+            <span>AFCs UFV</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li data-auth="guest-only"><a href="register.html">Registro/Login</a></li>
+                <li data-auth="user-only"><a href="catalogo.html">Catálogo</a></li>
+                <li data-auth="user-only"><a href="inscripciones.html">Mis Inscripciones</a></li>
+                <li data-auth="user-only"><a href="progreso.html">Mi Progreso</a></li>
+                <li data-auth="user-only"><a href="notificaciones.html">Notificaciones</a></li>
+                <li data-auth="admin-only"><a href="admin-panel.html">Panel Admin</a></li>
+                <li data-auth="user-only" id="logout-li"><a href="#" id="logout-link">Cerrar Sesión</a></li>
+                <li><a href="help-support.html" class="active">❓ Ayuda</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1 style="color: var(--ufv-blue); margin-bottom: 3rem; text-align: center;">Centro de Ayuda y Soporte</h1>
+        
+        <!-- Tabs: FAQs vs Contacto -->
+        <div class="tab-buttons">
+            <button class="btn btn-primary" onclick="switchTab('faqs')">📚 Preguntas Frecuentes</button>
+            <button class="btn btn-secondary" onclick="switchTab('contacto')">✉️ Contactar</button>
+            <button class="btn btn-secondary" onclick="switchTab('recursos')">📖 Recursos</button>
+        </div>
+
+        <!-- SECCIÓN 1: FAQs -->
+        <section id="faqs-section" class="section active">
+            <h2 style="color: var(--ufv-blue); margin-bottom: 1.5rem;">Preguntas Frecuentes</h2>
+            
+            <!-- Filtro de categorías -->
+            <div class="filter-buttons">
+                <button class="active" onclick="filterFAQs('todas', this)">Todas</button>
+                <button onclick="filterFAQs('general', this)">General</button>
+                <button onclick="filterFAQs('inscripciones', this)">Inscripciones</button>
+                <button onclick="filterFAQs('ects', this)">Créditos ECTS</button>
+                <button onclick="filterFAQs('tecnico', this)">Técnico</button>
+            </div>
+
+            <!-- Acordeón FAQs -->
+            <div id="faq-list"></div>
+        </section>
+
+        <!-- SECCIÓN 2: Contacto -->
+        <section id="contacto-section" class="section">
+            <h2 style="color: var(--ufv-blue); margin-bottom: 2rem;">Canales de Atención</h2>
+            
+            <div class="contact-channels">
+                <div class="contact-card">
+                    <strong style="font-size: 1.2rem;">📧 Email</strong>
+                    <p>soporte@ufv.es</p>
+                    <p style="font-size: 0.85rem; color: #999;">Respuesta en 24h</p>
+                    <a href="mailto:soporte@ufv.es" class="btn btn-primary" style="font-size: 0.9rem;">Enviar Email</a>
+                </div>
+
+                <div class="contact-card">
+                    <strong style="font-size: 1.2rem;">📞 Teléfono</strong>
+                    <p>+34 91 870 90 00</p>
+                    <p style="font-size: 0.85rem;">Lunes-Viernes 9:00-18:00</p>
+                    <a href="tel:+34918709000" class="btn btn-primary" style="font-size: 0.9rem;">Llamar</a>
+                </div>
+
+                <div class="contact-card">
+                    <strong style="font-size: 1.2rem;">💬 Chat</strong>
+                    <p>Soporte en vivo</p>
+                    <p style="font-size: 0.85rem;">Próximamente</p>
+                    <button class="btn btn-secondary" disabled style="font-size: 0.9rem;">Iniciar Chat</button>
+                </div>
+            </div>
+
+            <h3 style="color: var(--ufv-blue); margin-top: 2rem; margin-bottom: 1rem;">Formulario de Contacto</h3>
+            
+            <div class="form-container" style="max-width: 600px;">
+                <form id="contact-form">
+                    <div class="form-group">
+                        <label for="contact-asunto">Asunto *</label>
+                        <input type="text" id="contact-asunto" required placeholder="Ej: Problema con inscripción">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-categoria">Categoría *</label>
+                        <select id="contact-categoria" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--ufv-gray); border-radius: 8px;">
+                            <option value="">Seleccionar...</option>
+                            <option value="general">General</option>
+                            <option value="inscripciones">Inscripciones</option>
+                            <option value="tecnico">Problema Técnico</option>
+                            <option value="sugerencia">Sugerencia</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-mensaje">Mensaje *</label>
+                        <textarea id="contact-mensaje" required placeholder="Cuéntanos con detalle qué necesitas..." style="width: 100%; padding: 0.75rem; border: 1px solid var(--ufv-gray); border-radius: 8px; resize: vertical; min-height: 120px;"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Enviar</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: Recursos -->
+        <section id="recursos-section" class="section">
+            <h2 style="color: var(--ufv-blue); margin-bottom: 2rem;">Recursos Útiles</h2>
+            
+            <div class="catalog-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                <a href="#" class="card" style="text-decoration: none; color: inherit; transition: all 0.3s;">
+                    <strong style="font-size: 1.3rem; color: var(--ufv-blue);">📖 Guía del Usuario</strong>
+                    <p style="margin-top: 0.5rem; color: var(--ufv-text-light);">Aprende cómo usar la plataforma paso a paso</p>
+                </a>
+                
+                <a href="#" class="card" style="text-decoration: none; color: inherit; transition: all 0.3s;">
+                    <strong style="font-size: 1.3rem; color: var(--ufv-blue);">🎥 Video Tutoriales</strong>
+                    <p style="margin-top: 0.5rem; color: var(--ufv-text-light);">Mira nuestros videos sobre funcionalidades clave</p>
+                </a>
+                
+                <a href="#" class="card" style="text-decoration: none; color: inherit; transition: all 0.3s;">
+                    <strong style="font-size: 1.3rem; color: var(--ufv-blue);">📋 Términos de Servicio</strong>
+                    <p style="margin-top: 0.5rem; color: var(--ufv-text-light);">Lee nuestros términos y condiciones</p>
+                </a>
+                
+                <a href="#" class="card" style="text-decoration: none; color: inherit; transition: all 0.3s;">
+                    <strong style="font-size: 1.3rem; color: var(--ufv-blue);">🔒 Privacidad</strong>
+                    <p style="margin-top: 0.5rem; color: var(--ufv-text-light);">Conoce cómo protegemos tus datos</p>
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <script src="js/nav.js"></script>
+    <script>
+        // Datos de FAQs
+        const faqs = [
+            {
+                category: 'general',
+                question: '¿Qué son las AFCs?',
+                answer: 'Las Actividades Formativas Complementarias (AFCs) son actividades extracurriculares de la UFV que te permiten completar créditos ECTS participando en seminarios, voluntariado, deportes, talleres y más.'
+            },
+            {
+                category: 'general',
+                question: '¿Quién puede acceder a la plataforma?',
+                answer: 'Todos los estudiantes de la UFV con email institucional @alumnos.ufv.es. También pueden registrarse invitados sin cuenta usando el acceso público.'
+            },
+            {
+                category: 'general',
+                question: '¿Cómo propongo una nueva actividad?',
+                answer: 'Contacta al equipo de AFCs a través del formulario de contacto o envía un email a soporte@ufv.es con los detalles de tu propuesta.'
+            },
+            {
+                category: 'inscripciones',
+                question: '¿Cómo me inscribo en una actividad?',
+                answer: 'Entra al catálogo, selecciona la actividad que te interese y haz clic en "Inscribirse". Recibirás una confirmación inmediata.'
+            },
+            {
+                category: 'inscripciones',
+                question: '¿Puedo cancelar mi inscripción?',
+                answer: 'Sí, puedes cancelar tu inscripción hasta 48 horas antes del inicio de la actividad desde la sección "Mis Inscripciones".'
+            },
+            {
+                category: 'inscripciones',
+                question: '¿Qué pasa si una actividad está llena?',
+                answer: 'Si una actividad está llena, puedes usar la función "Notificadme" para recibir una notificación cuando se libere una plaza.'
+            },
+            {
+                category: 'ects',
+                question: '¿Cuántos ECTS necesito acumular?',
+                answer: 'El objetivo es acumular 12 ECTS durante el curso académico. Puedes ver tu progreso en la sección "Mi Progreso".'
+            },
+            {
+                category: 'ects',
+                question: '¿Cómo se acumulan los ECTS?',
+                answer: 'Los ECTS se asignan automáticamente una vez que completes la actividad. Solo necesitas asistir y el administrador marcará la actividad como completada.'
+            },
+            {
+                category: 'tecnico',
+                question: '¿Olvidé mi contraseña, ¿qué hago?',
+                answer: 'Por ahora, contacta a soporte@ufv.es indicando tu email y te ayudaremos a recuperar tu acceso.'
+            },
+            {
+                category: 'tecnico',
+                question: 'Tengo problemas para iniciar sesión',
+                answer: 'Verifica que tu email es correcto y que contenga el dominio @alumnos.ufv.es. Si persiste, contacta con soporte.'
+            },
+            {
+                category: 'tecnico',
+                question: '¿Qué navegadores soporta la plataforma?',
+                answer: 'Soportamos Chrome, Firefox, Safari y Edge (versiones recientes). Si tienes problemas en un navegador específico, contacta con soporte.'
+            },
+            {
+                category: 'general',
+                question: '¿Es segura mi información personal?',
+                answer: 'Sí, protegemos tu información con encriptación y cumplimos todas las normativas de privacidad de la UFV. Tu contraseña se almacena de forma segura.'
+            }
+        ];
+
+        // Renderizar FAQs
+        function renderFAQs(category = 'todas') {
+            const faqList = document.getElementById('faq-list');
+            faqList.innerHTML = '';
+
+            const filtered = category === 'todas' ? faqs : faqs.filter(f => f.category === category);
+
+            if (filtered.length === 0) {
+                faqList.innerHTML = '<p class="note" style="text-align: center;">No hay preguntas en esta categoría.</p>';
+                return;
+            }
+
+            filtered.forEach((faq, index) => {
+                const item = document.createElement('div');
+                item.className = 'card faq-item';
+                item.style.marginBottom = '1rem';
+                item.style.padding = '0';
+                item.innerHTML = `
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <strong style="color: var(--ufv-blue);">${faq.question}</strong>
+                        <span class="faq-icon" style="color: var(--ufv-secondary-blue); font-size: 0.8rem;">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        ${faq.answer}
+                    </div>
+                `;
+                faqList.appendChild(item);
+            });
+        }
+
+        // Expandir/Contraer FAQ
+        function toggleFAQ(element) {
+            element.closest('.faq-item').classList.toggle('open');
+        }
+
+        // Filtrar FAQs
+        function filterFAQs(category, btn) {
+            // Actualizar botón activo
+            document.querySelectorAll('.filter-buttons button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            renderFAQs(category);
+        }
+
+        // Cambiar tabs
+        function switchTab(tab) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(tab + '-section').classList.add('active');
+        }
+
+        // Enviar formulario contacto
+        document.getElementById('contact-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                asunto: document.getElementById('contact-asunto').value,
+                categoria: document.getElementById('contact-categoria').value,
+                mensaje: document.getElementById('contact-mensaje').value,
+                user_id: JSON.parse(localStorage.getItem('user'))?.id || null,
+                created_at: new Date().toISOString()
+            };
+
+            try {
+                let contacts = JSON.parse(localStorage.getItem('contacts')) || [];
+                contacts.push(formData);
+                localStorage.setItem('contacts', JSON.stringify(contacts));
+
+                showNotification('✓ Mensaje enviado. Te contactaremos pronto.', 'success');
+                document.getElementById('contact-form').reset();
+            } catch (err) {
+                showNotification('Error al enviar. Intenta de nuevo.', 'error');
+            }
+        });
+
+        // Mostrar notificación
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('hide');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Cargar FAQs al iniciar
+        window.addEventListener('DOMContentLoaded', () => {
+            renderFAQs('todas');
+        });
+    </script>
+</body>
+</html>
