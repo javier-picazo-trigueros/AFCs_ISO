@@ -129,7 +129,7 @@ Si quieres usar una cuenta preexistente:
 
 ### Estudiante Demo:
 ```
-Email: alumno@alumnos.ufv.es
+Email: prueba@alumnos.ufv.es
 Contraseña: 123456
 ```
 
