@@ -42,8 +42,33 @@
 
     <div class="container">
         
+        <!-- Formulario de Login Unificado -->
+        <div id="login-form-container">
+            <div class="form-container">
+                <h1>Iniciar Sesión</h1>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email Institucional</label>
+                        <input type="email" id="login-email" required placeholder="usuario@alumnos.ufv.es o admin@ufv.es">
+                        <small style="color: var(--ufv-secondary-blue); display: block; margin-top: 0.5rem;">
+                            📚 Alumnos: usuario@alumnos.ufv.es<br>
+                            👨‍💼 Administradores: admin@ufv.es
+                        </small>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Contraseña</label>
+                        <input type="password" id="login-password" required placeholder="Tu contraseña">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Iniciar Sesión</button>
+                </form>
+                <div class="auth-toggle">
+                    <p class="note">¿No tienes una cuenta? <a href="#" id="show-register">Crear cuenta de alumno</a></p>
+                </div>
+            </div>
+        </div>
+
         <!-- Formulario de Registro -->
-        <div id="register-form-container">
+        <div id="register-form-container" style="display: none;">
             <div class="form-container">
                 <h1>Crear Cuenta de Alumno</h1>
                 <form id="register-form">
@@ -66,28 +91,7 @@
                     <button type="submit" class="btn btn-primary" style="width: 100%;">Crear Cuenta</button>
                 </form>
                 <div class="auth-toggle">
-                    <p class="note">¿Ya tienes una cuenta? <a href="#" id="show-login">Inicia sesión aquí</a>.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Formulario de Login -->
-        <div id="login-form-container" style="display: none;">
-            <div class="form-container">
-                <h1>Iniciar Sesión</h1>
-                <form id="login-form">
-                    <div class="form-group">
-                        <label for="login-email">Email Institucional</label>
-                        <input type="email" id="login-email" required placeholder="usuario@alumnos.ufv.es">
-                    </div>
-                    <div class="form-group">
-                        <label for="login-password">Contraseña</label>
-                        <input type="password" id="login-password" required placeholder="Tu contraseña">
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Iniciar Sesión</button>
-                </form>
-                <div class="auth-toggle">
-                    <p class="note">¿No tienes una cuenta? <a href="#" id="show-register">Crea una aquí</a>.</p>
+                    <p class="note">¿Ya tienes una cuenta? <a href="#" id="show-login">Inicia sesión aquí</a></p>
                 </div>
             </div>
         </div>

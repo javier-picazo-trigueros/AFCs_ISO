@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Verificar Asistencia – AFCs Panel Admin</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .asistencia-container { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; margin-top: 2rem; }
+    .asistencia-list { background: #fff; border-radius: 8px; padding: 1.5rem; }
+    .asistencia-list h3 { color: var(--ufv-blue); margin-bottom: 1rem; }
+    .actividad-item { padding: 1rem; background: #f0f4f8; border-radius: 4px; margin-bottom: 0.5rem; cursor: pointer; border-left: 4px solid transparent; transition: all 0.2s; }
+    .actividad-item:hover { background: #e3ecf7; border-left-color: var(--ufv-blue); }
+    .actividad-item.active { background: var(--ufv-blue); color: #fff; border-left-color: #00916c; }
+    .asistencia-detail { background: #fff; border-radius: 8px; padding: 1.5rem; }
+    .asistencia-detail h2 { color: var(--ufv-blue); margin-bottom: 1.5rem; }
+    .estudiantes-tabla { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    .estudiantes-tabla th { background: #f0f4f8; padding: 0.75rem; text-align: left; border-bottom: 2px solid #ddd; }
+    .estudiantes-tabla td { padding: 0.75rem; border-bottom: 1px solid #eee; }
+    .estudiantes-tabla tr:hover { background: #f9f9f9; }
+    .checkbox-cell { text-align: center; }
+    .action-buttons { display: flex; gap: 0.5rem; justify-content: center; }
+    .btn-small { padding: 0.4rem 0.8rem; font-size: 0.85rem; border: none; border-radius: 4px; cursor: pointer; }
+    .btn-check { background: #00b894; color: #fff; }
+    .btn-check:hover { background: #00916c; }
+    .btn-uncheck { background: #e67e22; color: #fff; }
+    .btn-uncheck:hover { background: #d35400; }
+    .estado-asistencia { padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; text-align: center; }
+    .estado-verificado { background: #d4edda; color: #155724; }
+    .estado-no-verificado { background: #f8d7da; color: #721c24; }
+    .estado-sin-info { background: #e2e3e5; color: #383d41; }
+    .info-actividad { background: #e8f4f8; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem; border-left: 4px solid var(--ufv-secondary-blue); }
+    .info-actividad p { margin: 0.3rem 0; }
+    @media (max-width: 1024px) {
+      .asistencia-container { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <h1 class="brand">AFCs <span class="muted">Admin - Asistencia</span></h1>
+    <nav class="main-nav">
+      <a id="admin-name"></a>
+      <a href="admin-panel.html">← Volver al Panel</a>
+      <a href="#" onclick="logout()">Cerrar sesión</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <h2>Verificar Asistencia de Alumnos</h2>
+
+  <div class="asistencia-container">
+    <!-- Panel de selección de actividades -->
+    <div class="asistencia-list">
+      <h3>Actividades</h3>
+      <div id="actividades-list">
+        <p style="color: #999; text-align: center;">Cargando actividades...</p>
+      </div>
+    </div>
+
+    <!-- Panel de detalle y verificación -->
+    <div class="asistencia-detail">
+      <div id="no-selection" style="text-align: center; color: #999; padding: 2rem;">
+        <p>Selecciona una actividad para ver la lista de inscritos</p>
+      </div>
+      
+      <div id="detail-content" style="display: none;">
+        <h2 id="detail-title"></h2>
+        
+        <div class="info-actividad">
+          <p><strong>ECTS:</strong> <span id="detail-ects">-</span></p>
+          <p><strong>Fecha inicio:</strong> <span id="detail-inicio">-</span></p>
+          <p><strong>Fecha fin:</strong> <span id="detail-fin">-</span></p>
+          <p><strong>Total inscritos:</strong> <span id="detail-inscritos">0</span></p>
+        </div>
+
+        <h3>Lista de Asistencia</h3>
+        <table class="estudiantes-tabla">
+          <thead>
+            <tr>
+              <th>Alumno</th>
+              <th>Email</th>
+              <th>Estado</th>
+              <th>Créditos</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="estudiantes-tbody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="js/admin-auth.js"></script>
+<script src="js/admin-asistencia.js"></script>
+</body>
+</html>

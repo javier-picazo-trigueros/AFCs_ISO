@@ -59,6 +59,7 @@
     <div style="display: flex; gap: 10px;">
       <button class="btn-primary" onclick="showNewActivityModal()">+ Nueva Actividad</button>
       <button class="btn-ghost" onclick="refreshData()">Actualizar</button>
+      <a href="admin-asistencia.html" class="btn btn-secondary" style="text-decoration: none; padding: 8px 16px; border-radius: 4px; display: inline-block;">📋 Verificar Asistencia</a>
     </div>
   </div>
 
@@ -69,9 +70,9 @@
         <tr>
           <th>Nombre</th>
           <th>ECTS</th>
+          <th>Modalidad</th>
           <th>Inscritos</th>
           <th>Máximo</th>
-          <th>Disponibles</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -95,8 +96,37 @@
       <input type="number" id="act-ects" placeholder="ECTS" value="1" style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
       <input type="date" id="act-inicio" placeholder="Fecha inicio" required style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
       <input type="date" id="act-fin" placeholder="Fecha fin" required style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
+      <select id="act-modalidad" style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
+        <option value="Presencial">Presencial</option>
+        <option value="Online">Online</option>
+        <option value="Híbrido">Híbrido</option>
+      </select>
       <input type="number" id="act-max" placeholder="Máximo inscritos" value="50" style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
       <button type="submit" class="btn-primary">Crear</button>
+    </form>
+  </div>
+</div>
+
+<!-- Modal para editar actividad -->
+<div id="edit-activity-modal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button class="modal-close" onclick="hideEditActivityModal()">&times;</button>
+      <h3>Editar Actividad</h3>
+    </div>
+    <form id="edit-activity-form">
+      <input type="text" id="edit-act-nombre" placeholder="Nombre" required style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
+      <textarea id="edit-act-descripcion" placeholder="Descripción" style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc;min-height:100px"></textarea>
+      <input type="number" id="edit-act-ects" placeholder="ECTS" value="1" style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
+      <input type="date" id="edit-act-inicio" placeholder="Fecha inicio" required style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
+      <input type="date" id="edit-act-fin" placeholder="Fecha fin" required style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
+      <select id="edit-act-modalidad" style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
+        <option value="Presencial">Presencial</option>
+        <option value="Online">Online</option>
+        <option value="Híbrido">Híbrido</option>
+      </select>
+      <input type="number" id="edit-act-max" placeholder="Máximo inscritos" value="50" style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
+      <button type="submit" class="btn-primary">Guardar Cambios</button>
     </form>
   </div>
 </div>

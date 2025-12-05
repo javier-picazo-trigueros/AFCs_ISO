@@ -78,6 +78,23 @@ db.serialize(()=>{
     FOREIGN KEY(actividad_id) REFERENCES actividades(id)
   )`);
 
+  // Crear tabla de asistencia (verificación por admin)
+  db.run(`CREATE TABLE IF NOT EXISTS asistencias (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    inscripcion_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    actividad_id INTEGER NOT NULL,
+    verificado_por INTEGER,
+    asistio INTEGER DEFAULT 0,
+    creditos_otorgados INTEGER DEFAULT 0,
+    fecha_verificacion TEXT,
+    UNIQUE(inscripcion_id),
+    FOREIGN KEY(inscripcion_id) REFERENCES inscripcion_actividades(id),
+    FOREIGN KEY(user_id) REFERENCES users(id),
+    FOREIGN KEY(actividad_id) REFERENCES actividades(id),
+    FOREIGN KEY(verificado_por) REFERENCES admin_users(id)
+  )`);
+
   // Insertar actividades de demo
   db.get('SELECT COUNT(*) as c FROM actividades', (err,row)=>{
     if(err) return console.error(err);
@@ -92,6 +109,33 @@ db.serialize(()=>{
   stmt.run('Equipo de Fútbol Sala','Entrenamientos y torneos internos. Diviértete jugando.',1,'2025-02-01','2025-12-15','Presencial',25);
       stmt.finalize();
       console.log('Actividades de demo insertadas en la DB');
+    }
+  });
+  
+  // Crear usuario de prueba con inscripciones y progreso
+  db.get('SELECT COUNT(*) as c FROM users WHERE email = ?', ['alumnos@alumnos.ufv.es'], (err,row)=>{
+    if(err) return console.error(err);
+    if(row.c === 0){
+      const salt = bcrypt.genSaltSync(10);
+      const hash = bcrypt.hashSync('123456', salt);
+      db.run('INSERT INTO users (nombre,email,password_hash) VALUES (?,?,?)', 
+        ['Usuario de Prueba', 'alumnos@alumnos.ufv.es', hash], function(err2){
+        if(err2) return console.error(err2);
+        const userId = this.lastID;
+        
+        // Inscribilir a actividades completadas (2 + 2 = 4 ECTS aprox 60%)
+        const inscripcionesStmt = db.prepare('INSERT INTO inscripcion_actividades (user_id, actividad_id, status) VALUES (?,?,?)');
+        
+        // Voluntariado (2 ECTS) - completado
+        inscripcionesStmt.run(userId, 1, 'completado');
+        // Seminario (2 ECTS) - completado
+        inscripcionesStmt.run(userId, 2, 'completado');
+        // Taller Liderazgo (1 ECTS) - en curso
+        inscripcionesStmt.run(userId, 3, 'inscrito');
+        
+        inscripcionesStmt.finalize();
+        console.log(`Usuario de prueba creado: alumnos@alumnos.ufv.es (contraseña: 123456)`);
+      });
     }
   });
 });
@@ -253,12 +297,22 @@ app.get('/api/actividades',(req,res)=>{
   });
 });
 
+// API: obtener actividad específica
+app.get('/api/actividades/:id',(req,res)=>{
+  const id = Number(req.params.id);
+  db.get('SELECT * FROM actividades WHERE id = ?', [id], (err,row)=>{
+    if(err) return res.status(500).json({error:err.message});
+    if(!row) return res.status(404).json({error:'Actividad no encontrada'});
+    res.json(row);
+  });
+});
+
 // API: crear actividad (admin)
 app.post('/api/actividades',(req,res)=>{
-  const {nombre,descripcion,ects,fecha_inicio,fecha_fin,max_inscritos,admin_id} = req.body;
+  const {nombre,descripcion,ects,fecha_inicio,fecha_fin,max_inscritos,modalidad,admin_id} = req.body;
   if(!nombre || !admin_id) return res.status(400).json({error:'nombre y admin_id requeridos'});
-  db.run('INSERT INTO actividades (nombre,descripcion,ects,fecha_inicio,fecha_fin,max_inscritos,created_by) VALUES (?,?,?,?,?,?,?)', 
-    [nombre,descripcion||'',ects||0,fecha_inicio||'',fecha_fin||'',max_inscritos||50,admin_id], function(err){
+  db.run('INSERT INTO actividades (nombre,descripcion,ects,fecha_inicio,fecha_fin,max_inscritos,modalidad,created_by) VALUES (?,?,?,?,?,?,?,?)', 
+    [nombre,descripcion||'',ects||0,fecha_inicio||'',fecha_fin||'',max_inscritos||50,modalidad||'Presencial',admin_id], function(err){
     if(err) return res.status(500).json({error:err.message});
     res.status(201).json({id:this.lastID});
   });
@@ -267,10 +321,10 @@ app.post('/api/actividades',(req,res)=>{
 // API: actualizar actividad (admin)
 app.put('/api/actividades/:id',(req,res)=>{
   const id = Number(req.params.id);
-  const {nombre,descripcion,ects,fecha_inicio,fecha_fin,max_inscritos} = req.body;
+  const {nombre,descripcion,ects,fecha_inicio,fecha_fin,max_inscritos,modalidad} = req.body;
   if(!nombre) return res.status(400).json({error:'nombre requerido'});
-  db.run('UPDATE actividades SET nombre=?,descripcion=?,ects=?,fecha_inicio=?,fecha_fin=?,max_inscritos=? WHERE id=?',
-    [nombre,descripcion||'',ects||0,fecha_inicio||'',fecha_fin||'',max_inscritos||50,id], function(err){
+  db.run('UPDATE actividades SET nombre=?,descripcion=?,ects=?,fecha_inicio=?,fecha_fin=?,max_inscritos=?,modalidad=? WHERE id=?',
+    [nombre,descripcion||'',ects||0,fecha_inicio||'',fecha_fin||'',max_inscritos||50,modalidad||'Presencial',id], function(err){
     if(err) return res.status(500).json({error:err.message});
     if(this.changes === 0) return res.status(404).json({error:'No encontrado'});
     res.json({ok:true});
@@ -369,6 +423,88 @@ app.get('/api/admin/reporte',(req,res)=>{
           ORDER BY a.nombre`, (err,rows)=>{
     if(err) return res.status(500).json({error:err.message});
     res.json(rows);
+  });
+});
+
+// API: obtener lista de inscritos en una actividad (para verificar asistencia)
+app.get('/api/admin/actividad/:id/inscritos', (req,res)=>{
+  const actividadId = Number(req.params.id);
+  db.all(`
+    SELECT ia.id as inscripcion_id, u.id as user_id, u.nombre, u.email, ia.inscrito_en, a.asistio, a.creditos_otorgados
+    FROM inscripcion_actividades ia
+    JOIN users u ON ia.user_id = u.id
+    LEFT JOIN asistencias a ON ia.id = a.inscripcion_id
+    WHERE ia.actividad_id = ?
+    ORDER BY u.nombre
+  `, [actividadId], (err,rows)=>{
+    if(err) return res.status(500).json({error:err.message});
+    res.json(rows || []);
+  });
+});
+
+// API: registrar asistencia de un alumno
+app.post('/api/admin/registrar-asistencia', (req,res)=>{
+  const {inscripcion_id, user_id, actividad_id, asistio, admin_id} = req.body;
+  if(!inscripcion_id || !user_id || !actividad_id || admin_id === undefined) {
+    return res.status(400).json({error:'Parámetros requeridos'});
+  }
+
+  // Obtener info de la actividad
+  db.get('SELECT ects, fecha_fin FROM actividades WHERE id = ?', [actividad_id], (err, actividad)=>{
+    if(err) return res.status(500).json({error:err.message});
+    if(!actividad) return res.status(404).json({error:'Actividad no encontrada'});
+
+    const creditos = asistio ? (actividad.ects || 0) : 0;
+
+    // Verificar si ya existe registro
+    db.get('SELECT id FROM asistencias WHERE inscripcion_id = ?', [inscripcion_id], (err2, existing)=>{
+      if(err2) return res.status(500).json({error:err2.message});
+
+      if(existing){
+        // Actualizar
+        db.run(
+          'UPDATE asistencias SET asistio=?, creditos_otorgados=?, verificado_por=?, fecha_verificacion=datetime("now") WHERE inscripcion_id=?',
+          [asistio ? 1 : 0, creditos, admin_id, inscripcion_id],
+          function(err3){
+            if(err3) return res.status(500).json({error:err3.message});
+            res.json({ok:true, creditos_otorgados: creditos});
+          }
+        );
+      } else {
+        // Insertar
+        db.run(
+          'INSERT INTO asistencias (inscripcion_id, user_id, actividad_id, asistio, creditos_otorgados, verificado_por, fecha_verificacion) VALUES (?,?,?,?,?,?,datetime("now"))',
+          [inscripcion_id, user_id, actividad_id, asistio ? 1 : 0, creditos, admin_id],
+          function(err3){
+            if(err3) return res.status(500).json({error:err3.message});
+            res.json({ok:true, creditos_otorgados: creditos});
+          }
+        );
+      }
+    });
+  });
+});
+
+// API: obtener créditos del usuario (solo los verificados)
+app.get('/api/users/:id/creditos', (req,res)=>{
+  const userId = Number(req.params.id);
+  db.all(`
+    SELECT 
+      a.nombre,
+      a.ects,
+      ast.creditos_otorgados,
+      ast.fecha_verificacion
+    FROM asistencias ast
+    JOIN actividades a ON ast.actividad_id = a.id
+    WHERE ast.user_id = ? AND ast.asistio = 1
+    ORDER BY ast.fecha_verificacion DESC
+  `, [userId], (err, rows)=>{
+    if(err) return res.status(500).json({error:err.message});
+    const totalCreditos = rows.reduce((sum, row) => sum + (row.creditos_otorgados || 0), 0);
+    res.json({
+      creditosVerificados: rows,
+      totalCreditos: totalCreditos
+    });
   });
 });
 

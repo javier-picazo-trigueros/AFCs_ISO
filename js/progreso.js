@@ -14,15 +14,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const ECTS_GOAL = 6; // El objetivo de ECTS a completar
 
-    fetch(`/api/users/${user.id}/progreso`)
+    fetch(`/api/users/${user.id}/creditos`)
         .then(response => {
             if (!response.ok) {
-                throw new Error('No se pudo obtener el progreso del usuario.');
+                throw new Error('No se pudo obtener los créditos del usuario.');
             }
             return response.json();
         })
         .then(data => {
-            const totalEcts = data.totalEcts || 0;
+            const totalEcts = data.totalCreditos || 0;
             const percentage = Math.min(100, (totalEcts / ECTS_GOAL) * 100);
 
             // Actualizar el resumen y la barra de progreso
@@ -31,32 +31,32 @@ document.addEventListener('DOMContentLoaded', () => {
             progressBarFillElement.style.width = `${percentage}%`;
 
             // Renderizar las actividades completadas
-            if (data.actividadesCompletadas && data.actividadesCompletadas.length > 0) {
+            if (data.creditosVerificados && data.creditosVerificados.length > 0) {
                 completedListElement.innerHTML = ''; // Limpiar el mensaje por defecto
-                data.actividadesCompletadas.forEach(actividad => {
+                data.creditosVerificados.forEach(actividad => {
                     const card = document.createElement('div');
                     card.className = 'catalog-card completed';
                     card.innerHTML = `
                         <div class="card-header">
                             <h3>${actividad.nombre}</h3>
-                            <span class="ects-badge">${actividad.ects} ECTS</span>
+                            <span class="ects-badge">${actividad.creditos_otorgados} ECTS ✓</span>
                         </div>
                         <div class="card-body">
-                            <p>${actividad.descripcion || 'Actividad completada.'}</p>
+                            <p><strong>Verificado por administrador</strong></p>
                         </div>
                         <div class="card-footer">
-                            <p>Completada el: ${new Date(actividad.fecha_fin).toLocaleDateString()}</p>
-                            <span class="status-badge completed-badge">Completada</span>
+                            <p>Verificado el: ${new Date(actividad.fecha_verificacion).toLocaleDateString()}</p>
+                            <span class="status-badge completed-badge">Créditos Confirmados</span>
                         </div>
                     `;
                     completedListElement.appendChild(card);
                 });
             } else {
-                completedListElement.innerHTML = '<p class="note">Aún no has completado ninguna actividad que otorgue ECTS.</p>';
+                completedListElement.innerHTML = '<p class="note">Aún no tienes créditos verificados por el administrador. Los créditos se asignan después de que se verifique tu asistencia.</p>';
             }
         })
         .catch(error => {
-            console.error('Error al cargar el progreso:', error);
-            completedListElement.innerHTML = '<p class="note error">Hubo un error al cargar tu progreso. Inténtalo de nuevo más tarde.</p>';
+            console.error('Error al cargar los créditos:', error);
+            completedListElement.innerHTML = '<p class="note error">Hubo un error al cargar tus créditos. Inténtalo de nuevo más tarde.</p>';
         });
 });

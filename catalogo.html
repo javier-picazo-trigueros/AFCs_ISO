@@ -35,17 +35,23 @@
             <input type="text" id="search" placeholder="Buscar por nombre o palabra clave...">
             <select id="filter-ects">
                 <option value="">Todos los ECTS</option>
-                <option value="lt1">Menos de 1 crédito</option>
-                <option value="1-2">1 a 2 créditos</option>
-                <option value="2-3">2 a 3 créditos</option>
+                <option value="1">1 crédito</option>
+                <option value="2">2 créditos</option>
+                <option value="3">3 créditos</option>
                 <option value="gte3">3 o más créditos</option>
+            </select>
+            <select id="filter-modalidad">
+                <option value="">Todas las modalidades</option>
+                <option value="Presencial">Presencial</option>
+                <option value="Online">Online</option>
+                <option value="Híbrido">Híbrido</option>
             </select>
             <select id="filter-disponible">
                 <option value="">Cualquier disponibilidad</option>
                 <option value="1">Con plazas disponibles</option>
                 <option value="0">Sin plazas</option>
             </select>
-            <button id="btn-clear" class="btn btn-secondary">Limpiar</button>
+            <button id="btn-clear" class="btn btn-secondary">Limpiar Filtros</button>
         </div>
 
         <div id="catalog-list">

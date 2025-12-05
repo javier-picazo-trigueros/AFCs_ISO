@@ -62,9 +62,9 @@ function renderActividades(actividades){
       <tr>
         <td>${a.nombre}</td>
         <td>${a.ects || 0}</td>
+        <td>${a.modalidad || 'Presencial'}</td>
         <td>${inscritos}</td>
         <td>${a.max_inscritos}</td>
-        <td>${disponibles}</td>
         <td>
           <button class="action-btn" onclick="editActivity(${a.id})">Editar</button>
           <button class="action-btn delete-btn" onclick="deleteActivity(${a.id})">Eliminar</button>
@@ -91,6 +91,7 @@ async function submitNewActivity(e){
   const fecha_inicio = document.getElementById('act-inicio').value;
   const fecha_fin = document.getElementById('act-fin').value;
   const max_inscritos = Number(document.getElementById('act-max').value);
+  const modalidad = document.getElementById('act-modalidad').value;
   
   if(!nombre || !fecha_inicio || !fecha_fin) {
     alert('Completa todos los campos requeridos');
@@ -102,7 +103,7 @@ async function submitNewActivity(e){
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
-        nombre, descripcion, ects, fecha_inicio, fecha_fin, max_inscritos,
+        nombre, descripcion, ects, fecha_inicio, fecha_fin, max_inscritos, modalidad,
         admin_id: adminUser.id
       })
     });
@@ -120,9 +121,74 @@ async function submitNewActivity(e){
   }
 }
 
-function editActivity(id){
-  // Simplificado: redirige o abre modal (aquí solo placeholder)
-  alert('Editar actividad ' + id + ' (en desarrollo)');
+let editingActivityId = null;
+
+async function editActivity(id){
+  editingActivityId = id;
+  try{
+    const res = await fetch(`/api/actividades/${id}`);
+    if(!res.ok) throw new Error('Error al cargar la actividad');
+    const actividad = await res.json();
+    
+    // Rellenar el formulario de edición
+    document.getElementById('edit-act-nombre').value = actividad.nombre || '';
+    document.getElementById('edit-act-descripcion').value = actividad.descripcion || '';
+    document.getElementById('edit-act-ects').value = actividad.ects || 0;
+    document.getElementById('edit-act-inicio').value = actividad.fecha_inicio || '';
+    document.getElementById('edit-act-fin').value = actividad.fecha_fin || '';
+    document.getElementById('edit-act-max').value = actividad.max_inscritos || 50;
+    document.getElementById('edit-act-modalidad').value = actividad.modalidad || 'Presencial';
+    
+    // Mostrar modal
+    document.getElementById('edit-activity-modal').classList.add('show');
+  }catch(err){
+    console.error(err);
+    alert('Error al cargar la actividad');
+  }
+}
+
+function hideEditActivityModal(){
+  document.getElementById('edit-activity-modal').classList.remove('show');
+  editingActivityId = null;
+}
+
+async function submitEditActivity(e){
+  e.preventDefault();
+  if(!editingActivityId) return;
+  
+  const nombre = document.getElementById('edit-act-nombre').value.trim();
+  const descripcion = document.getElementById('edit-act-descripcion').value.trim();
+  const ects = Number(document.getElementById('edit-act-ects').value);
+  const fecha_inicio = document.getElementById('edit-act-inicio').value;
+  const fecha_fin = document.getElementById('edit-act-fin').value;
+  const max_inscritos = Number(document.getElementById('edit-act-max').value);
+  const modalidad = document.getElementById('edit-act-modalidad').value;
+  
+  if(!nombre || !fecha_inicio || !fecha_fin) {
+    alert('Completa todos los campos requeridos');
+    return;
+  }
+  
+  try{
+    const res = await fetch(`/api/actividades/${editingActivityId}`, {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        nombre, descripcion, ects, fecha_inicio, fecha_fin, max_inscritos, modalidad
+      })
+    });
+    if(!res.ok) {
+      const err = await res.json();
+      alert('Error: ' + err.error);
+      return;
+    }
+    hideEditActivityModal();
+    document.getElementById('edit-activity-form').reset();
+    refreshData();
+  }catch(err){
+    console.error(err);
+    alert('Error al actualizar actividad');
+  }
 }
 
 async function deleteActivity(id){
@@ -143,6 +209,9 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   checkAuth();
   const form = document.getElementById('new-activity-form');
   if(form) form.addEventListener('submit', submitNewActivity);
+  
+  const editForm = document.getElementById('edit-activity-form');
+  if(editForm) editForm.addEventListener('submit', submitEditActivity);
   
   // Health check antes de cargar datos
   try{

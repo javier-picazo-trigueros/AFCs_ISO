@@ -103,11 +103,17 @@ window.addEventListener('DOMContentLoaded', ()=>{
   if (loginForm) {
       loginForm.addEventListener('submit', async (e) => {
           e.preventDefault();
-          const email = loginEmailInput.value;
+          const email = loginEmailInput.value.toLowerCase();
           const password = loginPasswordInput.value;
 
           try {
-              const response = await fetch('/api/users/login', {
+              // Detectar si es alumno o admin por dominio
+              let endpoint = '/api/users/login';
+              if (email.endsWith('@ufv.es') && !email.includes('alumnos')) {
+                  endpoint = '/api/admin/login';
+              }
+
+              const response = await fetch(endpoint, {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({ email, password })
@@ -120,8 +126,12 @@ window.addEventListener('DOMContentLoaded', ()=>{
               // Guardar datos del usuario en localStorage
               localStorage.setItem('user', JSON.stringify(data));
               
-              // Redirigir al catálogo o al dashboard
-              window.location.href = 'catalogo.html';
+              // Redirigir según tipo de usuario
+              if (data.role === 'admin') {
+                  window.location.href = 'admin-panel.html';
+              } else {
+                  window.location.href = 'catalogo.html';
+              }
 
           } catch (error) {
               console.error('Error en el login:', error);

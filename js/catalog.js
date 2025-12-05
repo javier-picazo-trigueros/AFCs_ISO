@@ -214,6 +214,7 @@ function renderActividad(a, userInscripciones = []) {
 function applyFilters(items) {
     const searchTerm = document.getElementById('search').value.toLowerCase();
     const ectsFilter = document.getElementById('filter-ects').value;
+    const modalidadFilter = document.getElementById('filter-modalidad').value;
     const disponibleFilter = document.getElementById('filter-disponible').value;
 
     return items.filter(item => {
@@ -222,14 +223,19 @@ function applyFilters(items) {
         let matchesEcts = true;
         if (ectsFilter) {
             const ects = item.ects || 0;
-            if (ectsFilter === 'lt1') matchesEcts = ects < 1;
-            else if (ectsFilter === '1-2') matchesEcts = ects >= 1 && ects <= 2;
-            else if (ectsFilter === '2-3') matchesEcts = ects >= 2 && ects <= 3;
+            if (ectsFilter === '1') matchesEcts = ects === 1;
+            else if (ectsFilter === '2') matchesEcts = ects === 2;
+            else if (ectsFilter === '3') matchesEcts = ects === 3;
             else if (ectsFilter === 'gte3') matchesEcts = ects >= 3;
         }
         
+        let matchesModalidad = true;
+        if (modalidadFilter) {
+            matchesModalidad = (item.modalidad || 'Presencial') === modalidadFilter;
+        }
+        
         const matchesDisponible = !disponibleFilter || (disponibleFilter === '1' && item.disponibles > 0) || (disponibleFilter === '0' && item.disponibles <= 0);
-        return matchesSearch && matchesEcts && matchesDisponible;
+        return matchesSearch && matchesEcts && matchesModalidad && matchesDisponible;
     });
 }
 
@@ -275,11 +281,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('search').addEventListener('input', loadAndRender);
     document.getElementById('filter-ects').addEventListener('change', loadAndRender);
+    document.getElementById('filter-modalidad').addEventListener('change', loadAndRender);
     document.getElementById('filter-disponible').addEventListener('change', loadAndRender);
 
     document.getElementById('btn-clear').addEventListener('click', () => {
         document.getElementById('search').value = '';
         document.getElementById('filter-ects').value = '';
+        document.getElementById('filter-modalidad').value = '';
         document.getElementById('filter-disponible').value = '';
         loadAndRender();
     });
