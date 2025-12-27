@@ -27,15 +27,22 @@
             <img src="img/logo-ufv.jpg" alt="Logo UFV">
             <span>AFCs UFV</span>
         </div>
-        <nav>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Menú">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <nav id="mobile-nav">
             <ul>
                 <li><a href="index.html">Inicio</a></li>
                 <li data-auth="guest-only"><a href="register.html" class="active">Registro/Login</a></li>
                 <li data-auth="user-only"><a href="catalogo.html">Catálogo</a></li>
                 <li data-auth="user-only"><a href="inscripciones.html">Mis Inscripciones</a></li>
                 <li data-auth="user-only"><a href="progreso.html">Mi Progreso</a></li>
+                <li data-auth="user-only"><a href="notificaciones.html">Notificaciones</a></li>
                 <li data-auth="admin-only"><a href="admin-panel.html">Panel Admin</a></li>
                 <li data-auth="user-only" id="logout-li"><a href="#" id="logout-link">Cerrar Sesión</a></li>
+                <li><a href="help-support.html">❓ Ayuda</a></li>
             </ul>
         </nav>
     </header>

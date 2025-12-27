@@ -58,4 +58,29 @@ function applyAuthVisibility() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', applyAuthVisibility);
+// Lógica para menú hamburguesa
+function setupMobileMenu() {
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileNav = document.getElementById('mobile-nav');
+
+    if (menuToggle && mobileNav) {
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+        });
+
+        // Cerrar menú al hacer clic en un enlace
+        const navLinks = mobileNav.querySelectorAll('a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                mobileNav.classList.remove('active');
+            });
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    applyAuthVisibility();
+    setupMobileMenu();
+});
