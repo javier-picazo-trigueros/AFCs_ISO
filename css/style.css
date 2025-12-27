@@ -22,6 +22,22 @@
   padding: 0;
 }
 
+/* WCAG 2.1: Focus outline visible */
+*:focus {
+  outline: 3px solid var(--ufv-secondary-blue);
+  outline-offset: 2px;
+}
+
+/* No mostrar outline para mouse (pero mantener para teclado) */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 3px solid var(--ufv-secondary-blue);
+  outline-offset: 2px;
+}
+
 body {
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   background-color: var(--ufv-light-gray);
@@ -469,6 +485,36 @@ nav a:hover, nav a.active {
     font-size: 0.9rem;
 }
 
+/* WCAG 2.1: Skip link para saltar al contenido */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--ufv-secondary-blue);
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 100;
+  border-radius: 0 0 8px 0;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* WCAG 2.1: Screen readers only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 /* Responsive */
 
 /* Extra small devices (320px and up) */
@@ -858,6 +904,9 @@ nav a:hover, nav a.active {
     cursor: pointer;
     float: right;
     transition: color 0.2s;
+    background: none;
+    border: none;
+    padding: 0;
 }
 
 .modal-close:hover {

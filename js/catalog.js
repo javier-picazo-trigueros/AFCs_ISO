@@ -26,11 +26,17 @@ async function getUserInscripciones() {
     }
 }
 
-// Mostrar notificación
+// Mostrar notificación con ARIA
 function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     notification.textContent = message;
+    
+    // WCAG 2.1: Agregar roles ARIA para notificaciones
+    notification.setAttribute('role', 'alert');
+    notification.setAttribute('aria-live', 'polite');
+    notification.setAttribute('aria-atomic', 'true');
+    
     document.body.appendChild(notification);
     
     setTimeout(() => {
@@ -41,6 +47,9 @@ function showNotification(message, type = 'success') {
 
 // Abrir modal con detalles de la actividad
 function openModal(activity) {
+    // WCAG 2.1: Guardar elemento que tenía focus antes
+    window.lastFocusedElement = document.activeElement;
+    
     const modal = document.getElementById('activity-modal');
     document.getElementById('modal-title').textContent = activity.nombre;
     document.getElementById('modal-ects').textContent = activity.ects || 0;
@@ -48,13 +57,61 @@ function openModal(activity) {
     document.getElementById('modal-fecha-inicio').textContent = activity.fecha_inicio ? new Date(activity.fecha_inicio).toLocaleDateString() : 'No definida';
     document.getElementById('modal-fecha-fin').textContent = activity.fecha_fin ? new Date(activity.fecha_fin).toLocaleDateString() : 'No definida';
     document.getElementById('modal-description').textContent = activity.descripcion || 'No hay descripción disponible.';
+    document.getElementById('modal-activity-id').value = activity.id;
+    
     modal.style.display = 'block';
+    
+    // WCAG 2.1: Mover focus al modal
+    const closeBtn = modal.querySelector('.modal-close');
+    if (closeBtn) {
+        closeBtn.focus();
+    }
 }
 
-// Cerrar modal
+// Cerrar modal con ESC y focus trap
 function closeModal() {
     const modal = document.getElementById('activity-modal');
     modal.style.display = 'none';
+    
+    // WCAG 2.1: Retornar focus al elemento que abrió el modal
+    if (window.lastFocusedElement) {
+        window.lastFocusedElement.focus();
+    }
+}
+
+// WCAG 2.1: Focus trap en modal
+function setupModalFocusTrap() {
+    const modal = document.getElementById('activity-modal');
+    
+    modal.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeModal();
+            return;
+        }
+        
+        if (e.key !== 'Tab') return;
+        
+        const focusables = modal.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        
+        if (focusables.length === 0) return;
+        
+        const firstFocusable = focusables[0];
+        const lastFocusable = focusables[focusables.length - 1];
+        
+        if (e.shiftKey) {
+            if (document.activeElement === firstFocusable) {
+                e.preventDefault();
+                lastFocusable.focus();
+            }
+        } else {
+            if (document.activeElement === lastFocusable) {
+                e.preventDefault();
+                firstFocusable.focus();
+            }
+        }
+    });
 }
 
 // Inscribir al usuario en una actividad
@@ -267,17 +324,7 @@ async function loadAndRender() {
     const filtered = applyFilters(merged);
     if (filtered.length === 0) {
         container.innerHTML = '<p class="note" style="text-align:center; padding: 2rem;">No hay actividades con esos filtros.</p>';
-        return;
-    }
-
-    filtered.forEach(a => {
-        const node = renderActividad(a, userInscripciones);
-        container.appendChild(node);
-    });
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-    loadAndRender();
+    setupModalFocusTrap();
 
     document.getElementById('search').addEventListener('input', loadAndRender);
     document.getElementById('filter-ects').addEventListener('change', loadAndRender);
@@ -285,6 +332,18 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('filter-disponible').addEventListener('change', loadAndRender);
 
     document.getElementById('btn-clear').addEventListener('click', () => {
+        document.getElementById('search').value = '';
+        document.getElementById('filter-ects').value = '';
+        document.getElementById('filter-modalidad').value = '';
+        document.getElementById('filter-disponible').value = '';
+        loadAndRender();
+    });
+
+    // Cerrar modal al hacer clic fuera
+    window.addEventListener('click', (event) => {
+        const modal = document.getElementById('activity-modal');
+        if (event.target === modal) {
+            closeModal().addEventListener('click', () => {
         document.getElementById('search').value = '';
         document.getElementById('filter-ects').value = '';
         document.getElementById('filter-modalidad').value = '';

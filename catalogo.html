@@ -8,6 +8,9 @@
     <link rel="icon" href="https://www.ufv.es/wp-content/uploads/2020/01/cropped-favicon-32x32.png">
 </head>
 <body>
+    <!-- WCAG 2.1: Skip link -->
+    <a href="#main" class="skip-link">Saltar al contenido principal</a>
+
     <header>
         <div class="logo">
             <img src="img/logo-ufv.jpg" alt="Logo UFV">
@@ -34,40 +37,41 @@
     </header>
 
     <div class="container">
-        <h1 style="color: var(--ufv-blue); margin-bottom: 2rem;">Catálogo de Actividades</h1>
+        <main id="main">
         
         <div class="filter-bar">
-            <input type="text" id="search" placeholder="Buscar por nombre o palabra clave...">
-            <select id="filter-ects">
+            <input type="text" id="search" placeholder="Buscar por nombre o palabra clave..." aria-label="Buscar actividades" aria-describedby="search-help">
+            <span id="search-help" class="sr-only">Escribe palabras clave para filtrar actividades por nombre</span>
+            <select id="filter-ects" aria-label="Filtrar por créditos ECTS">
                 <option value="">Todos los ECTS</option>
                 <option value="1">1 crédito</option>
                 <option value="2">2 créditos</option>
                 <option value="3">3 créditos</option>
                 <option value="gte3">3 o más créditos</option>
             </select>
-            <select id="filter-modalidad">
+            <select id="filter-modalidad" aria-label="Filtrar por modalidad">
                 <option value="">Todas las modalidades</option>
                 <option value="Presencial">Presencial</option>
                 <option value="Online">Online</option>
                 <option value="Híbrido">Híbrido</option>
             </select>
-            <select id="filter-disponible">
+            <select id="filter-disponible" aria-label="Filtrar por disponibilidad">
                 <option value="">Cualquier disponibilidad</option>
                 <option value="1">Con plazas disponibles</option>
                 <option value="0">Sin plazas</option>
             </select>
-            <button id="btn-clear" class="btn btn-secondary">Limpiar Filtros</button>
+            <button id="btn-clear" class="btn btn-secondary" aria-label="Limpiar todos los filtros">Limpiar Filtros</button>
         </div>
 
-        <div id="catalog-list">
+        <div id="catalog-list" role="region" aria-live="polite" aria-label="Lista de actividades disponibles">
             <!-- Las actividades se cargarán aquí dinámicamente -->
         </div>
     </div>
 
     <!-- Modal para Ver Más -->
-    <div id="activity-modal" class="modal">
+    <div id="activity-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div class="modal-content">
-            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <button class="modal-close" aria-label="Cerrar diálogo" onclick="closeModal()">&times;</button>
             <div class="modal-header">
                 <h2 id="modal-title"></h2>
                 <input type="hidden" id="modal-activity-id">

@@ -67,6 +67,10 @@ function setupMobileMenu() {
         menuToggle.addEventListener('click', () => {
             menuToggle.classList.toggle('active');
             mobileNav.classList.toggle('active');
+            
+            // ARIA: Anunciar cambio de estado
+            const isOpen = menuToggle.classList.contains('active');
+            menuToggle.setAttribute('aria-expanded', isOpen);
         });
 
         // Cerrar menú al hacer clic en un enlace
@@ -75,7 +79,21 @@ function setupMobileMenu() {
             link.addEventListener('click', () => {
                 menuToggle.classList.remove('active');
                 mobileNav.classList.remove('active');
+                menuToggle.setAttribute('aria-expanded', 'false');
             });
+        });
+
+        // WCAG 2.1: Inicializar aria-expanded
+        menuToggle.setAttribute('aria-expanded', 'false');
+        
+        // Cerrar menú con ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && menuToggle.classList.contains('active')) {
+                menuToggle.classList.remove('active');
+                mobileNav.classList.remove('active');
+                menuToggle.setAttribute('aria-expanded', 'false');
+                menuToggle.focus();
+            }
         });
     }
 }
