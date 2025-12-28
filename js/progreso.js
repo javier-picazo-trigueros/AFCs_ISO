@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const user = JSON.parse(localStorage.getItem('user'));
 
     if (!user || !user.id) {
-        // Si no hay usuario, redirigir a la página de login o mostrar un mensaje.
         window.location.href = 'register.html';
         return;
     }
@@ -12,28 +11,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressBarFillElement = document.getElementById('progress-bar-fill');
     const completedListElement = document.getElementById('completed-activities-list');
 
-    const ECTS_GOAL = 6; // El objetivo de ECTS a completar
-
-    fetch(`/api/users/${user.id}/creditos`)
+    fetch(`/api/progreso/${user.id}`)
         .then(response => {
             if (!response.ok) {
-                throw new Error('No se pudo obtener los créditos del usuario.');
+                throw new Error('No se pudo obtener el progreso del usuario.');
             }
             return response.json();
         })
         .then(data => {
-            const totalEcts = data.totalCreditos || 0;
-            const percentage = Math.min(100, (totalEcts / ECTS_GOAL) * 100);
+            const creditosObtenidos = data.creditos_obtenidos || 0;
+            const porcentaje = data.porcentaje_progreso || 0;
 
             // Actualizar el resumen y la barra de progreso
-            totalEctsElement.textContent = totalEcts;
-            ectsPercentElement.textContent = Math.round(percentage);
-            progressBarFillElement.style.width = `${percentage}%`;
+            totalEctsElement.textContent = creditosObtenidos;
+            ectsPercentElement.textContent = porcentaje;
+            progressBarFillElement.style.width = `${porcentaje}%`;
 
             // Renderizar las actividades completadas
-            if (data.creditosVerificados && data.creditosVerificados.length > 0) {
+            if (data.actividades_completadas && data.actividades_completadas.length > 0) {
                 completedListElement.innerHTML = ''; // Limpiar el mensaje por defecto
-                data.creditosVerificados.forEach(actividad => {
+                data.actividades_completadas.forEach(actividad => {
                     const card = document.createElement('div');
                     card.className = 'catalog-card completed';
                     card.innerHTML = `
@@ -43,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <div class="card-body">
                             <p><strong>Verificado por administrador</strong></p>
+                            <p style="font-size: 0.9rem; color: var(--ufv-secondary-blue);">ECTS totales de la actividad: ${actividad.ects}</p>
                         </div>
                         <div class="card-footer">
                             <p>Verificado el: ${new Date(actividad.fecha_verificacion).toLocaleDateString()}</p>
@@ -56,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
         .catch(error => {
-            console.error('Error al cargar los créditos:', error);
-            completedListElement.innerHTML = '<p class="note error">Hubo un error al cargar tus créditos. Inténtalo de nuevo más tarde.</p>';
+            console.error('Error al cargar el progreso:', error);
+            completedListElement.innerHTML = '<p class="note error">Hubo un error al cargar tu progreso. Inténtalo de nuevo más tarde.</p>';
         });
 });

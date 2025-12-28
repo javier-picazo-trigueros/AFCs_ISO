@@ -148,52 +148,44 @@ async function darseDeBaja(actividadId) {
     const user = JSON.parse(localStorage.getItem('user'));
     if (!user || !user.id) return;
 
-    if (!confirm('¿Estás seguro de que deseas darte de baja de esta actividad?')) return;
-
     try {
-        const inscripciones = await getUserInscripciones();
-        const inscripcion = inscripciones.find(ins => ins.actividad_id === actividadId);
-        
-        if (!inscripcion) {
-            throw new Error('No se encontró la inscripción');
-        }
-
-        const res = await fetch(`/api/inscripciones/${inscripcion.inscripcion_id}`, {
+        const res = await fetch(`/api/inscribir/${actividadId}`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ user_id: user.id })
+            body: JSON.stringify({ user_id: user.id }),
         });
 
+        const data = await res.json();
         if (!res.ok) {
-            throw new Error('Error al darse de baja');
+            throw new Error(data.error || 'Error al desuscribirse');
         }
 
-        showNotification('Te has dado de baja correctamente', 'info');
+        showNotification('Te has dado de baja con éxito', 'success');
         loadAndRender();
 
     } catch (err) {
-        console.error('Error al dar de baja:', err);
+        console.error('Error en la baja:', err);
         showNotification(`Error: ${err.message}`, 'error');
     }
 }
 
-function renderActividad(a, userInscripciones = []) {
-    const div = document.createElement('div');
-    div.className = 'catalog-card';
-    const logged = !!localStorage.getItem('user');
+// Crear tarjeta de actividad con estructura HTML
+function createActivityCard(a, userInscripciones) {
+    const isInscribed = userInscripciones && userInscripciones.some(i => i.actividad_id === a.id);
+    const logged = !!JSON.parse(localStorage.getItem('user'));
     
-    const isInscribed = userInscripciones.some(ins => ins.actividad_id === a.id);
-
-    let statusClass = 'open';
-    let statusText = `${a.disponibles} plazas disponibles`;
+    let statusClass = 'available';
+    let statusText = 'Disponible';
+    
     if (a.disponibles <= 0) {
         statusClass = 'full';
         statusText = 'Completo';
-    } else if (a.disponibles <= 5) {
-        statusClass = 'limited';
-        statusText = `¡Solo ${a.disponibles} plazas!`;
     }
 
+    const div = document.createElement('div');
+    div.className = 'activity-card';
+    div.setAttribute('role', 'article');
+    
     const content = `
         <div class="card-header">
             <h3>${a.nombre}</h3>
@@ -324,8 +316,23 @@ async function loadAndRender() {
     const filtered = applyFilters(merged);
     if (filtered.length === 0) {
         container.innerHTML = '<p class="note" style="text-align:center; padding: 2rem;">No hay actividades con esos filtros.</p>';
-    setupModalFocusTrap();
+        return;
+    }
 
+    // Renderizar cada actividad
+    filtered.forEach(activity => {
+        const card = createActivityCard(activity, userInscripciones);
+        container.appendChild(card);
+    });
+
+    setupModalFocusTrap();
+}
+
+// Inicializar cuando carga el documento
+document.addEventListener('DOMContentLoaded', () => {
+    loadAndRender();
+
+    // Agregar event listeners a los filtros
     document.getElementById('search').addEventListener('input', loadAndRender);
     document.getElementById('filter-ects').addEventListener('change', loadAndRender);
     document.getElementById('filter-modalidad').addEventListener('change', loadAndRender);
@@ -343,20 +350,25 @@ async function loadAndRender() {
     window.addEventListener('click', (event) => {
         const modal = document.getElementById('activity-modal');
         if (event.target === modal) {
-            closeModal().addEventListener('click', () => {
-        document.getElementById('search').value = '';
-        document.getElementById('filter-ects').value = '';
-        document.getElementById('filter-modalidad').value = '';
-        document.getElementById('filter-disponible').value = '';
-        loadAndRender();
-    });
-
-    window.addEventListener('click', (event) => {
-        const modal = document.getElementById('activity-modal');
-        if (event.target === modal) {
-            modal.style.display = 'none';
+            closeModal();
         }
     });
+
+    // Cerrar modal con botón de cerrar
+    const closeBtn = document.querySelector('.modal-close');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeModal);
+    }
+
+    // Botón de inscribirse en modal
+    const inscribirBtn = document.getElementById('modal-inscribirse');
+    if (inscribirBtn) {
+        inscribirBtn.addEventListener('click', () => {
+            const actividadId = Number(document.getElementById('modal-activity-id').value);
+            inscribirse(actividadId);
+            closeModal();
+        });
+    }
 });
 
 

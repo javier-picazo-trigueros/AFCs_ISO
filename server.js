@@ -12,8 +12,9 @@ const DB_PATH = path.join(DB_DIR,'inscripciones.db');
 
 const db = new sqlite3.Database(DB_PATH);
 
-// Crear tabla si no existe e insertar datos de ejemplo
+// Crear tablas y datos iniciales
 db.serialize(()=>{
+  // Crear todas las tablas primero
   db.run(`CREATE TABLE IF NOT EXISTS inscripciones (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nombre TEXT NOT NULL,
@@ -22,18 +23,6 @@ db.serialize(()=>{
     status TEXT DEFAULT 'pendiente'
   )`);
 
-  // Insertar filas demo si tabla vacía
-  db.get('SELECT COUNT(*) as c FROM inscripciones', (err,row)=>{
-    if(err) return console.error(err);
-    if(row.c === 0){
-      const stmt = db.prepare('INSERT INTO inscripciones (nombre,ects,fecha,status) VALUES (?,?,?,?)');
-      stmt.run('Voluntariado UFV Solidaria',2,'20 Febrero 2025','pendiente');
-      stmt.run('Seminario de Innovación Social',2,'12 Marzo 2025','en_curso');
-      stmt.finalize();
-      console.log('Datos iniciales insertados en la DB');
-    }
-  });
-  // Crear tabla de usuarios si no existe
   db.run(`CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nombre TEXT,
@@ -42,7 +31,6 @@ db.serialize(()=>{
     created_at TEXT DEFAULT (datetime('now'))
   )`);
 
-  // Crear tabla de administradores
   db.run(`CREATE TABLE IF NOT EXISTS admin_users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nombre TEXT,
@@ -51,7 +39,6 @@ db.serialize(()=>{
     created_at TEXT DEFAULT (datetime('now'))
   )`);
 
-  // Crear tabla de actividades
   db.run(`CREATE TABLE IF NOT EXISTS actividades (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nombre TEXT NOT NULL,
@@ -66,7 +53,6 @@ db.serialize(()=>{
     FOREIGN KEY(created_by) REFERENCES admin_users(id)
   )`);
 
-  // Crear tabla de inscripciones (relación usuario-actividad)
   db.run(`CREATE TABLE IF NOT EXISTS inscripcion_actividades (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER,
@@ -78,7 +64,6 @@ db.serialize(()=>{
     FOREIGN KEY(actividad_id) REFERENCES actividades(id)
   )`);
 
-  // Crear tabla de asistencia (verificación por admin)
   db.run(`CREATE TABLE IF NOT EXISTS asistencias (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     inscripcion_id INTEGER NOT NULL,
@@ -95,49 +80,80 @@ db.serialize(()=>{
     FOREIGN KEY(verificado_por) REFERENCES admin_users(id)
   )`);
 
-  // Insertar actividades de demo
-  db.get('SELECT COUNT(*) as c FROM actividades', (err,row)=>{
-    if(err) return console.error(err);
-    if(row.c === 0){
-      const stmt = db.prepare('INSERT INTO actividades (nombre,descripcion,ects,fecha_inicio,fecha_fin,modalidad,max_inscritos) VALUES (?,?,?,?,?,?,?)');
-  stmt.run('Voluntariado UFV Solidaria','Actividad de voluntariado social. Únete a nuestro equipo para ayudar a la comunidad.',2,'2025-02-20','2025-02-22','Presencial',30);
-  stmt.run('Seminario de Innovación Social','Seminario sobre innovación social y emprendimiento. Aprende nuevas formas de hacer negocios.',2,'2025-03-12','2025-03-14','Híbrido',25);
-  stmt.run('Taller de Liderazgo','Taller práctico de habilidades de liderazgo. Desarrolla tus capacidades.',1,'2025-04-10','2025-04-11','Presencial',20);
-  stmt.run('Taller de Fotografía Creativa','Aprende técnicas de fotografía móvil y composición. Crea contenido visual impactante.',1,'2025-05-05','2025-05-06','Presencial',20);
-  stmt.run('Curso de Programación Básica','Introducción a la programación en Python. Aprende los fundamentos del código.',3,'2025-06-01','2025-06-15','Online',40);
-  stmt.run('Club de Debate','Sesiones semanales de debate y oratoria. Mejora tus habilidades de comunicación.',1,'2025-04-20','2025-06-20','Presencial',30);
-  stmt.run('Equipo de Fútbol Sala','Entrenamientos y torneos internos. Diviértete jugando.',1,'2025-02-01','2025-12-15','Presencial',25);
-      stmt.finalize();
-      console.log('Actividades de demo insertadas en la DB');
-    }
-  });
-  
-  // Crear usuario de prueba con inscripciones y progreso
-  db.get('SELECT COUNT(*) as c FROM users WHERE email = ?', ['alumnos@alumnos.ufv.es'], (err,row)=>{
-    if(err) return console.error(err);
-    if(row.c === 0){
-      const salt = bcrypt.genSaltSync(10);
-      const hash = bcrypt.hashSync('123456', salt);
-      db.run('INSERT INTO users (nombre,email,password_hash) VALUES (?,?,?)', 
-        ['Usuario de Prueba', 'alumnos@alumnos.ufv.es', hash], function(err2){
-        if(err2) return console.error(err2);
-        const userId = this.lastID;
-        
-        // Inscribilir a actividades completadas (2 + 2 = 4 ECTS aprox 60%)
-        const inscripcionesStmt = db.prepare('INSERT INTO inscripcion_actividades (user_id, actividad_id, status) VALUES (?,?,?)');
-        
-        // Voluntariado (2 ECTS) - completado
-        inscripcionesStmt.run(userId, 1, 'completado');
-        // Seminario (2 ECTS) - completado
-        inscripcionesStmt.run(userId, 2, 'completado');
-        // Taller Liderazgo (1 ECTS) - en curso
-        inscripcionesStmt.run(userId, 3, 'inscrito');
-        
-        inscripcionesStmt.finalize();
-        console.log(`Usuario de prueba creado: alumnos@alumnos.ufv.es (contraseña: 123456)`);
-      });
-    }
-  });
+  // Ahora insertar datos de demo si las tablas están vacías
+  setTimeout(() => {
+    db.get('SELECT COUNT(*) as c FROM actividades', (err, row) => {
+      if (err) return console.error('Error al contar actividades:', err);
+      if (row.c === 0) {
+        const stmt = db.prepare('INSERT INTO actividades (nombre,descripcion,ects,fecha_inicio,fecha_fin,modalidad,max_inscritos) VALUES (?,?,?,?,?,?,?)');
+        stmt.run('Voluntariado UFV Solidaria', 'Actividad de voluntariado social. Únete a nuestro equipo para ayudar a la comunidad.', 2, '2025-02-20', '2025-02-22', 'Presencial', 30);
+        stmt.run('Seminario de Innovación Social', 'Seminario sobre innovación social y emprendimiento. Aprende nuevas formas de hacer negocios.', 2, '2025-03-12', '2025-03-14', 'Híbrido', 25);
+        stmt.run('Taller de Liderazgo', 'Taller práctico de habilidades de liderazgo. Desarrolla tus capacidades.', 1, '2025-04-10', '2025-04-11', 'Presencial', 20);
+        stmt.run('Taller de Fotografía Creativa', 'Aprende técnicas de fotografía móvil y composición. Crea contenido visual impactante.', 1, '2025-05-05', '2025-05-06', 'Presencial', 20);
+        stmt.run('Curso de Programación Básica', 'Introducción a la programación en Python. Aprende los fundamentos del código.', 3, '2025-06-01', '2025-06-15', 'Online', 40);
+        stmt.run('Club de Debate', 'Sesiones semanales de debate y oratoria. Mejora tus habilidades de comunicación.', 1, '2025-04-20', '2025-06-20', 'Presencial', 30);
+        stmt.run('Equipo de Fútbol Sala', 'Entrenamientos y torneos internos. Diviértete jugando.', 1, '2025-02-01', '2025-12-15', 'Presencial', 25);
+        stmt.finalize(() => {
+          console.log('✓ Actividades de demo insertadas en la DB');
+        });
+      }
+    });
+
+    // Crear usuario de prueba si no existe
+    db.get('SELECT COUNT(*) as c FROM users WHERE email = ?', ['alumnos@alumnos.ufv.es'], (err, row) => {
+      if (err) return console.error('Error al buscar usuario:', err);
+      if (row.c === 0) {
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync('123456', salt);
+        db.run('INSERT INTO users (nombre,email,password_hash) VALUES (?,?,?)',
+          ['Usuario de Prueba', 'alumnos@alumnos.ufv.es', hash], function (err2) {
+          if (err2) return console.error('Error al crear usuario:', err2);
+          const userId = this.lastID;
+
+          // Inscribir a actividades
+          const inscripcionesStmt = db.prepare('INSERT INTO inscripcion_actividades (user_id, actividad_id, status) VALUES (?,?,?)');
+          // Actividad 1: Voluntariado (2 ECTS) - completado
+          inscripcionesStmt.run(userId, 1, 'completado');
+          // Actividad 2: Seminario (2 ECTS) - completado
+          inscripcionesStmt.run(userId, 2, 'completado');
+          // Actividad 3: Taller Liderazgo (1 ECTS) - completado
+          inscripcionesStmt.run(userId, 3, 'completado');
+          // Actividad 4: Taller Foto (1 ECTS) - inscrito (sin completar)
+          inscripcionesStmt.run(userId, 4, 'inscrito');
+          inscripcionesStmt.finalize(() => {
+            // Ahora crear registros de asistencia para las completadas (3 créditos totales: 2+1)
+            const asistenciaStmt = db.prepare(
+              'INSERT INTO asistencias (inscripcion_id, user_id, actividad_id, asistio, creditos_otorgados, fecha_verificacion) VALUES (?,?,?,?,?,?)'
+            );
+            
+            // Inscripción 1: Voluntariado (2 ECTS)
+            asistenciaStmt.run(1, userId, 1, 1, 2, new Date().toISOString());
+            // Inscripción 2: Seminario (2 ECTS) - pero solo otorgamos 1 crédito para total de 3
+            asistenciaStmt.run(2, userId, 2, 1, 1, new Date().toISOString());
+            
+            asistenciaStmt.finalize(() => {
+              console.log('✓ Usuario de prueba creado: alumnos@alumnos.ufv.es (contraseña: 123456)');
+              console.log('✓ Actividades completadas: 3 créditos obtenidos');
+            });
+          });
+        });
+      }
+    });
+
+    // Crear cuenta de administrador de prueba si no existe
+    db.get('SELECT COUNT(*) as c FROM admin_users WHERE email = ?', ['admin@ufv.es'], (err, row) => {
+      if (err) return console.error('Error al buscar admin:', err);
+      if (row.c === 0) {
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync('123456', salt);
+        db.run('INSERT INTO admin_users (nombre,email,password_hash) VALUES (?,?,?)',
+          ['Administrador', 'admin@ufv.es', hash], function (err2) {
+          if (err2) return console.error('Error al crear admin:', err2);
+          console.log('✓ Cuenta de administrador creada: admin@ufv.es (contraseña: 123456)');
+        });
+      }
+    });
+  }, 500);
 });
 
 const app = express();
@@ -195,6 +211,45 @@ app.delete('/api/inscripciones/:id',(req,res)=>{
       res.json({ok:true});
     });
   }
+});
+
+// API: obtener progreso del usuario (créditos, actividades completadas, etc)
+app.get('/api/progreso/:user_id', (req,res)=>{
+  const userId = Number(req.params.user_id);
+  
+  // Obtener créditos totales otorgados
+  db.get('SELECT COALESCE(SUM(creditos_otorgados), 0) as creditos FROM asistencias WHERE user_id = ?', [userId], (err, creditosRow)=>{
+    if(err) return res.status(500).json({error:err.message});
+    
+    const creditosObtenidos = creditosRow.creditos || 0;
+    
+    // Obtener actividades completadas (con asistencia verificada)
+    db.all(`
+      SELECT a.id, a.nombre, a.ects, aa.creditos_otorgados, aa.fecha_verificacion
+      FROM asistencias aa
+      JOIN actividades a ON aa.actividad_id = a.id
+      WHERE aa.user_id = ?
+      ORDER BY aa.fecha_verificacion DESC
+    `, [userId], (err2, actividades)=>{
+      if(err2) return res.status(500).json({error:err2.message});
+      
+      // Obtener total de ECTS posibles e inscritos
+      db.get('SELECT COUNT(*) as total, SUM(a.ects) as ects_total FROM inscripcion_actividades ia JOIN actividades a ON ia.actividad_id = a.id WHERE ia.user_id = ?', [userId], (err3, countRow)=>{
+        if(err3) return res.status(500).json({error:err3.message});
+        
+        const totalInscripciones = countRow.total || 0;
+        const ectsTotales = countRow.ects_total || 0;
+        
+        res.json({
+          creditos_obtenidos: creditosObtenidos,
+          total_inscripciones: totalInscripciones,
+          ects_totales: ectsTotales,
+          actividades_completadas: actividades || [],
+          porcentaje_progreso: totalInscripciones > 0 ? Math.round((creditosObtenidos / Math.min(ectsTotales, 50)) * 100) : 0
+        });
+      });
+    });
+  });
 });
 
 // API: registrar usuario alumno
