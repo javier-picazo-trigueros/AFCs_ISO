@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const user = JSON.parse(localStorage.getItem('user'));
 
-    if (!user || !user.id) {
+    // Solo mostrar la demo para el usuario predeterminado
+    if (!user || user.email !== 'alumnos@alumnos.ufv.es') {
         window.location.href = 'register.html';
         return;
     }
@@ -16,70 +17,73 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    fetch(`/api/progreso/${user.id}`)
-        .then(response => {
-            console.log('Respuesta del servidor:', response.status);
-            if (!response.ok) {
-                throw new Error(`Error HTTP: ${response.status}`);
+    // Datos simulados para demostración (solo para alumnos@alumnos.ufv.es)
+    const demoData = {
+        creditos_obtenidos: 3,
+        porcentaje_progreso: 50,
+        actividades_completadas: [
+            {
+                id: 1,
+                nombre: 'Voluntariado UFV Solidaria',
+                ects: 2,
+                creditos_otorgados: 2,
+                fecha_verificacion: '2025-02-22'
+            },
+            {
+                id: 2,
+                nombre: 'Seminario de Innovación Social',
+                ects: 1,
+                creditos_otorgados: 1,
+                fecha_verificacion: '2025-03-14'
             }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Datos recibidos:', data);
-            
-            const creditosObtenidos = data.creditos_obtenidos || 0;
-            const porcentaje = Math.min(data.porcentaje_progreso || 0, 100);
+        ]
+    };
 
-            console.log(`Créditos: ${creditosObtenidos}, Porcentaje: ${porcentaje}%`);
+    const creditosObtenidos = demoData.creditos_obtenidos || 0;
+    const porcentaje = Math.min(demoData.porcentaje_progreso || 0, 100);
 
-            // Actualizar el resumen y la barra de progreso
-            totalEctsElement.textContent = creditosObtenidos;
-            ectsPercentElement.textContent = porcentaje;
-            progressBarFillElement.style.width = `${porcentaje}%`;
-            
-            // Hacer visible la barra
-            progressBarFillElement.style.display = 'block';
+    console.log(`Créditos: ${creditosObtenidos}, Porcentaje: ${porcentaje}%`);
 
-            // Renderizar las actividades completadas
-            if (data.actividades_completadas && data.actividades_completadas.length > 0) {
-                console.log(`Se encontraron ${data.actividades_completadas.length} actividades completadas`);
-                completedListElement.innerHTML = ''; // Limpiar el mensaje por defecto
-                
-                data.actividades_completadas.forEach(actividad => {
-                    const card = document.createElement('div');
-                    card.className = 'catalog-card completed';
-                    card.innerHTML = `
-                        <div class="card-header">
-                            <h3>${actividad.nombre}</h3>
-                            <span class="ects-badge">${actividad.creditos_otorgados} ECTS ✓</span>
-                        </div>
-                        <div class="card-body">
-                            <p><strong data-i18n="progress.verified_by_admin">Verificado por administrador</strong></p>
-                            <p style="font-size: 0.9rem; color: var(--ufv-secondary-blue);">ECTS de la actividad: <strong>${actividad.ects}</strong></p>
-                        </div>
-                        <div class="card-footer">
-                            <p><span data-i18n="progress.verified_on">Verificado el</span>: ${new Date(actividad.fecha_verificacion).toLocaleDateString()}</p>
-                            <span class="status-badge completed-badge" data-i18n="progress.credits_confirmed">Créditos Confirmados</span>
-                        </div>
-                    `;
-                    completedListElement.appendChild(card);
-                });
-                
-                // Traducir el contenido recién añadido
-                if (typeof translatePageContent === 'function') {
-                    translatePageContent();
-                }
-            } else {
-                console.log('No hay actividades completadas');
-                const noActivitiesMsg = typeof t === 'function' ? t('progress.no_activities') : 'Aún no tienes créditos verificados por el administrador. Los créditos se asignan después de que se verifique tu asistencia.';
-                completedListElement.innerHTML = `<p class="note">${noActivitiesMsg}</p>`;
-            }
-        })
-        .catch(error => {
-            console.error('Error al cargar el progreso:', error);
-            const errorMsg = typeof t === 'function' ? t('progress.error') : 'Hubo un error al cargar tu progreso. Inténtalo de nuevo más tarde.';
-            completedListElement.innerHTML = `<p class="note error">${errorMsg}</p>`;
-            
-            // También mostrar en la consola para debugging
-            console.error('Detalles del error:', error.message);
+    // Actualizar el resumen y la barra de progreso
+    totalEctsElement.textContent = creditosObtenidos;
+    ectsPercentElement.textContent = porcentaje;
+    progressBarFillElement.style.width = `${porcentaje}%`;
+    
+    // Hacer visible la barra
+    progressBarFillElement.style.display = 'block';
+
+    // Renderizar las actividades completadas
+    if (demoData.actividades_completadas && demoData.actividades_completadas.length > 0) {
+        console.log(`Se encontraron ${demoData.actividades_completadas.length} actividades completadas`);
+        completedListElement.innerHTML = ''; // Limpiar el mensaje por defecto
+        
+        demoData.actividades_completadas.forEach(actividad => {
+            const card = document.createElement('div');
+            card.className = 'catalog-card completed';
+            card.innerHTML = `
+                <div class="card-header">
+                    <h3>${actividad.nombre}</h3>
+                    <span class="ects-badge">${actividad.creditos_otorgados} ECTS ✓</span>
+                </div>
+                <div class="card-body">
+                    <p><strong data-i18n="progress.verified_by_admin">Verificado por administrador</strong></p>
+                    <p style="font-size: 0.9rem; color: var(--ufv-secondary-blue);">ECTS de la actividad: <strong>${actividad.ects}</strong></p>
+                </div>
+                <div class="card-footer">
+                    <p><span data-i18n="progress.verified_on">Verificado el</span>: ${new Date(actividad.fecha_verificacion).toLocaleDateString()}</p>
+                    <span class="status-badge completed-badge" data-i18n="progress.credits_confirmed">Créditos Confirmados</span>
+                </div>
+            `;
+            completedListElement.appendChild(card);
         });
+        
+        // Traducir el contenido recién añadido
+        if (typeof translatePageContent === 'function') {
+            translatePageContent();
+        }
+    } else {
+        console.log('No hay actividades completadas');
+        const noActivitiesMsg = typeof t === 'function' ? t('progress.no_activities') : 'Aún no tienes créditos verificados por el administrador. Los créditos se asignan después de que se verifique tu asistencia.';
+        completedListElement.innerHTML = `<p class="note">${noActivitiesMsg}</p>`;
+    }
+});

@@ -102,32 +102,46 @@ db.serialize(()=>{
     // Crear usuario de prueba si no existe
     db.get('SELECT COUNT(*) as c FROM users WHERE email = ?', ['alumnos@alumnos.ufv.es'], (err, row) => {
       if (err) return console.error('Error al buscar usuario:', err);
+      console.log(`[INIT] Buscando usuario alumnos@alumnos.ufv.es. Existe: ${row.c > 0}`);
+      
       if (row.c === 0) {
+        console.log('[INIT] Creando usuario de prueba...');
         const salt = bcrypt.genSaltSync(10);
         const hash = bcrypt.hashSync('123456', salt);
         db.run('INSERT INTO users (nombre,email,password_hash) VALUES (?,?,?)',
           ['Usuario de Prueba', 'alumnos@alumnos.ufv.es', hash], function (err2) {
           if (err2) return console.error('Error al crear usuario:', err2);
           const userId = this.lastID;
+          console.log(`[INIT] Usuario creado con ID: ${userId}`);
 
-          // Inscribir a actividades
+          // Inscribir a actividades y capturar inscripcion_id
+          const inscripcionIds = [];
           const inscripcionesStmt = db.prepare('INSERT INTO inscripcion_actividades (user_id, actividad_id, status) VALUES (?,?,?)');
+          
           // Actividad 1: Voluntariado (2 ECTS) - completado
-          inscripcionesStmt.run(userId, 1, 'completado');
-          // Actividad 2: Seminario (3 ECTS) - completado
-          inscripcionesStmt.run(userId, 2, 'completado');
+          inscripcionesStmt.run(userId, 1, 'completado', function(err) {
+            if (!err) inscripcionIds[0] = this.lastID;
+          });
+          // Actividad 2: Seminario (1 ECTS) - completado
+          inscripcionesStmt.run(userId, 2, 'completado', function(err) {
+            if (!err) inscripcionIds[1] = this.lastID;
+          });
           // Actividad 3: Taller Liderazgo (1 ECTS) - inscrito (sin completar)
-          inscripcionesStmt.run(userId, 3, 'inscrito');
+          inscripcionesStmt.run(userId, 3, 'inscrito', function(err) {
+            if (!err) inscripcionIds[2] = this.lastID;
+          });
+          
           inscripcionesStmt.finalize(() => {
+            console.log('[INIT] Inscripciones creadas:', inscripcionIds);
             // Crear registros de asistencia para las completadas (3 créditos totales: 2 + 1)
             const asistenciaStmt = db.prepare(
               'INSERT INTO asistencias (inscripcion_id, user_id, actividad_id, asistio, creditos_otorgados, fecha_verificacion) VALUES (?,?,?,?,?,?)'
             );
             
-            // Inscripción 1: Voluntariado - otorga 2 ECTS
-            asistenciaStmt.run(1, userId, 1, 1, 2, new Date().toISOString());
-            // Inscripción 2: Seminario - otorga 1 ECTS (total 3)
-            asistenciaStmt.run(2, userId, 2, 1, 1, new Date().toISOString());
+            // Actividad 1: Voluntariado - otorga 2 ECTS
+            if (inscripcionIds[0]) asistenciaStmt.run(inscripcionIds[0], userId, 1, 1, 2, new Date().toISOString());
+            // Actividad 2: Seminario - otorga 1 ECTS (total 3)
+            if (inscripcionIds[1]) asistenciaStmt.run(inscripcionIds[1], userId, 2, 1, 1, new Date().toISOString());
             
             asistenciaStmt.finalize(() => {
               console.log('✓ Usuario de prueba creado: alumnos@alumnos.ufv.es (contraseña: 123456)');
@@ -136,6 +150,8 @@ db.serialize(()=>{
             });
           });
         });
+      } else {
+        console.log('[INIT] Usuario alumnos@alumnos.ufv.es ya existe');
       }
     });
 

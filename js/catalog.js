@@ -144,12 +144,12 @@ async function inscribirse(actividadId) {
 }
 
 // Darse de baja de una actividad
-async function darseDeBaja(actividadId) {
+async function darseDeBaja(inscripcionId) {
     const user = JSON.parse(localStorage.getItem('user'));
     if (!user || !user.id) return;
 
     try {
-        const res = await fetch(`/api/inscribir/${actividadId}`, {
+        const res = await fetch(`/api/inscripciones/${inscripcionId}`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ user_id: user.id }),
@@ -160,7 +160,8 @@ async function darseDeBaja(actividadId) {
             throw new Error(data.error || 'Error al desuscribirse');
         }
 
-        showNotification('Te has dado de baja con éxito', 'success');
+        const msgSuccess = typeof t === 'function' ? t('inscriptions.cancel_success') : 'Te has dado de baja con éxito';
+        showNotification(msgSuccess, 'success');
         loadAndRender();
 
     } catch (err) {
@@ -234,9 +235,12 @@ function createActivityCard(a, userInscripciones) {
 
             const bajaBtn = document.createElement('button');
             bajaBtn.className = 'btn btn-danger';
+            bajaBtn.setAttribute('data-i18n', 'inscriptions.cancel');
             bajaBtn.textContent = 'Dar de Baja';
             bajaBtn.style.flex = '1';
-            bajaBtn.onclick = () => darseDeBaja(a.id);
+            // Pass inscripcion_id from the inscription object
+            const inscripcion = userInscripciones.find(i => i.actividad_id === a.id);
+            bajaBtn.onclick = () => darseDeBaja(inscripcion ? inscripcion.inscripcion_id : a.id);
             buttonsDiv.appendChild(bajaBtn);
         } else {
             const inscribirseBtn = document.createElement('button');
