@@ -13,6 +13,27 @@
             margin-bottom: 2rem;
             flex-wrap: wrap;
             justify-content: center;
+            border-bottom: 2px solid var(--ufv-gray);
+            padding-bottom: 0.5rem;
+        }
+        .tab-buttons button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: none;
+            color: var(--ufv-text-light);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            border-bottom: 3px solid transparent;
+        }
+        .tab-buttons button:hover {
+            color: var(--ufv-blue);
+        }
+        .tab-buttons button.active {
+            color: var(--ufv-blue);
+            border-bottom-color: var(--ufv-blue);
+            font-weight: 600;
         }
         .faq-item {
             cursor: pointer;
@@ -163,9 +184,9 @@
         
         <!-- Tabs: FAQs vs Contacto -->
         <div class="tab-buttons">
-            <button class="btn btn-primary" onclick="switchTab('faqs')">📚 Preguntas Frecuentes</button>
-            <button class="btn btn-secondary" onclick="switchTab('contacto')">✉️ Contactar</button>
-            <button class="btn btn-secondary" onclick="switchTab('recursos')">📖 Recursos</button>
+            <button class="active" onclick="switchTab('faqs')">Preguntas Frecuentes</button>
+            <button onclick="switchTab('contacto')">Contactar</button>
+            <button onclick="switchTab('recursos')">Recursos</button>
         </div>
 
         <!-- SECCIÓN 1: FAQs -->
@@ -380,8 +401,13 @@
 
         // Cambiar tabs
         function switchTab(tab) {
+            // Remover clase active de todas las secciones y botones
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-buttons button').forEach(b => b.classList.remove('active'));
+            
+            // Agregar clase active a la sección y botón correspondiente
             document.getElementById(tab + '-section').classList.add('active');
+            event.target.classList.add('active');
         }
 
         // Enviar formulario contacto
