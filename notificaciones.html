@@ -148,6 +148,63 @@
             color: white;
             border-color: var(--ufv-secondary-blue);
         }
+        @media (max-width: 480px) {
+            .notification-banner {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            .notification-banner button {
+                width: 100%;
+            }
+            .notification-tabs {
+                flex-direction: column;
+                border-bottom: none;
+                border-left: 4px solid var(--ufv-blue);
+                padding-left: 1rem;
+            }
+            .notification-tabs button {
+                padding: 0.75rem 0;
+                text-align: left;
+                border-bottom: 1px solid var(--ufv-gray);
+            }
+            .notification-tabs button.active {
+                border-bottom: none;
+            }
+            .notification-tabs button.active::after {
+                display: none;
+            }
+            .notification-item {
+                flex-direction: column;
+                gap: 1rem;
+                border-left: 4px solid var(--ufv-secondary-blue);
+                padding: 1rem;
+            }
+            .notification-actions {
+                margin-left: 0;
+                width: 100%;
+                justify-content: flex-end;
+            }
+            .filter-buttons {
+                flex-direction: column;
+            }
+            .filter-buttons button {
+                width: 100%;
+            }
+            .notification-title {
+                font-size: 0.95rem;
+            }
+            .notification-description {
+                font-size: 0.85rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+            h2 {
+                font-size: 1.2rem;
+            }
+        }
     </style>
 </head>
 <body>

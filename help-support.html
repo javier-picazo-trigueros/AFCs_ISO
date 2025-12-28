@@ -92,6 +92,44 @@
         .section.active {
             display: block;
         }
+        @media (max-width: 480px) {
+            .tab-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .tab-buttons button {
+                width: 100%;
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+            .filter-buttons {
+                flex-direction: column;
+            }
+            .filter-buttons button {
+                width: 100%;
+            }
+            .contact-channels {
+                grid-template-columns: 1fr;
+            }
+            .faq-question {
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+            .faq-answer {
+                padding: 0 0.75rem 0.75rem 0.75rem;
+                font-size: 0.9rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+            h2 {
+                font-size: 1.2rem;
+            }
+            h3 {
+                font-size: 1.1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -115,13 +153,7 @@
                 <li data-auth="user-only"><a href="notificaciones.html">Notificaciones</a></li>
                 <li data-auth="admin-only"><a href="admin-panel.html">Panel Admin</a></li>
                 <li data-auth="user-only" id="logout-li"><a href="#" id="logout-link">Cerrar Sesión</a></li>
-                <li><a href="help-support.html" class="active">❓ Ayuda</a></li>
-            </ul>
-        </nav>
-    </header>
-                <li data-auth="admin-only"><a href="admin-panel.html">Panel Admin</a></li>
-                <li data-auth="user-only" id="logout-li"><a href="#" id="logout-link">Cerrar Sesión</a></li>
-                <li><a href="help-support.html" class="active">❓ Ayuda</a></li>
+                <li><a href="help-support.html" class="active">Ayuda</a></li>
             </ul>
         </nav>
     </header>
