@@ -34,15 +34,15 @@
         </button>
         <nav id="mobile-nav">
             <ul>
-                <li><a href="index.html">Inicio</a></li>
-                <li data-auth="guest-only"><a href="register.html" class="active">Registro/Login</a></li>
-                <li data-auth="user-only"><a href="catalogo.html">Catálogo</a></li>
-                <li data-auth="user-only"><a href="inscripciones.html">Mis Inscripciones</a></li>
-                <li data-auth="user-only"><a href="progreso.html">Mi Progreso</a></li>
-                <li data-auth="user-only"><a href="notificaciones.html">Notificaciones</a></li>
-                <li data-auth="admin-only"><a href="admin-panel.html">Panel Admin</a></li>
-                <li data-auth="user-only" id="logout-li"><a href="#" id="logout-link">Cerrar Sesión</a></li>
-                <li><a href="help-support.html">Ayuda</a></li>
+                <li><a href="index.html" data-i18n="nav.home">Inicio</a></li>
+                <li data-auth="guest-only"><a href="register.html" class="active" data-i18n="nav.register">Registro/Login</a></li>
+                <li data-auth="user-only"><a href="catalogo.html" data-i18n="nav.catalog">Catálogo</a></li>
+                <li data-auth="user-only"><a href="inscripciones.html" data-i18n="nav.inscriptions">Mis Inscripciones</a></li>
+                <li data-auth="user-only"><a href="progreso.html" data-i18n="nav.progress">Mi Progreso</a></li>
+                <li data-auth="user-only"><a href="notificaciones.html" data-i18n="nav.notifications">Notificaciones</a></li>
+                <li data-auth="admin-only"><a href="admin-panel.html" data-i18n="nav.admin">Panel Admin</a></li>
+                <li data-auth="user-only" id="logout-li"><a href="#" id="logout-link" data-i18n="nav.logout">Cerrar Sesión</a></li>
+                <li><a href="help-support.html" data-i18n="nav.help">Ayuda</a></li>
             </ul>
         </nav>
     </header>
@@ -52,24 +52,24 @@
         <!-- Formulario de Login Unificado -->
         <div id="login-form-container">
             <div class="form-container">
-                <h1>Iniciar Sesión</h1>
+                <h1 data-i18n="auth.sign_in">Iniciar Sesión</h1>
                 <form id="login-form">
                     <div class="form-group">
-                        <label for="login-email">Email Institucional</label>
-                        <input type="email" id="login-email" required placeholder="alumnos@alumnos.ufv.es o admin@ufv.es">
+                        <label for="login-email" data-i18n="auth.email">Email Institucional</label>
+                        <input type="email" id="login-email" required placeholder="alumnos@alumnos.ufv.es o admin@ufv.es" data-i18n-placeholder="auth.email_placeholder">
                         <small style="color: var(--ufv-secondary-blue); display: block; margin-top: 0.5rem;">
-                            📚 Alumnos: alumnos@alumnos.ufv.es (contraseña: 123456)<br>
-                            👨‍💼 Administradores: admin@ufv.es
+                            <span data-i18n="auth.demo_students">📚 Alumnos: alumnos@alumnos.ufv.es (contraseña: 123456)</span><br>
+                            <span data-i18n="auth.demo_admin">👨‍💼 Administradores: admin@ufv.es</span>
                         </small>
                     </div>
                     <div class="form-group">
-                        <label for="login-password">Contraseña</label>
-                        <input type="password" id="login-password" required placeholder="Tu contraseña">
+                        <label for="login-password" data-i18n="auth.password">Contraseña</label>
+                        <input type="password" id="login-password" required placeholder="Tu contraseña" data-i18n-placeholder="auth.password_placeholder">
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Iniciar Sesión</button>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;" data-i18n="auth.sign_in">Iniciar Sesión</button>
                 </form>
                 <div class="auth-toggle">
-                    <p class="note">¿No tienes una cuenta? <a href="#" id="show-register">Crear cuenta de alumno</a></p>
+                    <p class="note"><span data-i18n="auth.no_account">¿No tienes una cuenta?</span> <a href="#" id="show-register" data-i18n="auth.create_account">Crear cuenta de alumno</a></p>
                 </div>
             </div>
         </div>
@@ -77,36 +77,39 @@
         <!-- Formulario de Registro -->
         <div id="register-form-container" style="display: none;">
             <div class="form-container">
-                <h1>Crear Cuenta de Alumno</h1>
+                <h1 data-i18n="auth.sign_up">Crear Cuenta de Alumno</h1>
                 <form id="register-form">
                     <div class="form-group">
-                        <label for="register-nombre">Nombre (opcional)</label>
-                        <input type="text" id="register-nombre" placeholder="Tu nombre y apellidos">
+                        <label for="register-nombre" data-i18n="auth.name">Nombre (opcional)</label>
+                        <input type="text" id="register-nombre" placeholder="Tu nombre y apellidos" data-i18n-placeholder="auth.name_placeholder">
                     </div>
                     <div class="form-group">
-                        <label for="register-email">Email Institucional (@alumnos.ufv.es)</label>
-                        <input type="email" id="register-email" required placeholder="alumnos@alumnos.ufv.es">
+                        <label for="register-email" data-i18n="auth.email">Email Institucional (@alumnos.ufv.es)</label>
+                        <input type="email" id="register-email" required placeholder="alumnos@alumnos.ufv.es" data-i18n-placeholder="auth.email_placeholder">
                     </div>
                     <div class="form-group">
-                        <label for="register-password">Contraseña</label>
-                        <input type="password" id="register-password" required placeholder="Mínimo 6 caracteres">
+                        <label for="register-password" data-i18n="auth.password">Contraseña</label>
+                        <input type="password" id="register-password" required placeholder="Mínimo 6 caracteres" data-i18n-placeholder="auth.password_new_placeholder">
                     </div>
                     <div class="form-group">
-                        <label for="register-password-confirm">Confirmar Contraseña</label>
-                        <input type="password" id="register-password-confirm" required placeholder="Repite la contraseña">
+                        <label for="register-password-confirm" data-i18n="auth.password_confirm">Confirmar Contraseña</label>
+                        <input type="password" id="register-password-confirm" required placeholder="Repite la contraseña" data-i18n-placeholder="auth.password_confirm_placeholder">
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Crear Cuenta</button>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;" data-i18n="auth.sign_up">Crear Cuenta</button>
                 </form>
                 <div class="auth-toggle">
-                    <p class="note">¿Ya tienes una cuenta? <a href="#" id="show-login">Inicia sesión aquí</a></p>
+                    <p class="note"><span data-i18n="auth.have_account">¿Ya tienes una cuenta?</span> <a href="#" id="show-login" data-i18n="auth.sign_in_link">Inicia sesión aquí</a></p>
                 </div>
             </div>
         </div>
 
     </div>
 
+    <script src="js/i18n.js"></script>
+    <script src="js/theme.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/nav.js"></script>
+    <script src="js/settings-panel.js"></script>
     <script>
         // Lógica para alternar entre formularios
         const registerContainer = document.getElementById('register-form-container');

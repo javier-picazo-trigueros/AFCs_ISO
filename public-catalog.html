@@ -108,9 +108,9 @@
         </button>
         <nav id="mobile-nav">
             <ul>
-                <li><a href="index.html">Inicio</a></li>
-                <li><a href="register.html">Registro/Login</a></li>
-                <li><a href="help-support.html">Ayuda</a></li>
+                <li><a href="index.html" data-i18n="nav.home">Inicio</a></li>
+                <li><a href="register.html" data-i18n="nav.register">Registro/Login</a></li>
+                <li><a href="help-support.html" data-i18n="nav.help">Ayuda</a></li>
             </ul>
         </nav>
     </header>
@@ -120,20 +120,20 @@
         <!-- Banner de bienvenida -->
         <div class="guest-banner">
             <h2>👋 Bienvenido al Catálogo de AFCs</h2>
-            <p>Exploración de Actividades Formativas Complementarias de la UFV</p>
-            <p style="font-size: 0.9rem; margin-top: 1rem;">Para inscribirte en actividades, completa el formulario de invitado.</p>
+            <p data-i18n="index.subtitle">Exploración de Actividades Formativas Complementarias de la UFV</p>
+            <p style="font-size: 0.9rem; margin-top: 1rem;" data-i18n="status.guest_instruction">Para inscribirte en actividades, completa el formulario de invitado.</p>
         </div>
 
         <!-- Buscar y filtrar -->
         <div style="background: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: var(--shadow);">
-            <h3 style="color: var(--ufv-blue); margin-top: 0;">🔍 Buscar Actividades</h3>
+            <h3 style="color: var(--ufv-blue); margin-top: 0;" data-i18n="public.search_activities">🔍 Buscar Actividades</h3>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                <input type="text" id="search-input" placeholder="Buscar por nombre o descripción..." 
+                <input type="text" id="search-input" placeholder="Buscar por nombre o descripción..." data-i18n-placeholder="catalog.search_placeholder"
                        style="padding: 0.75rem; border: 1px solid var(--ufv-gray); border-radius: 8px;">
                 
                 <select id="filter-category" style="padding: 0.75rem; border: 1px solid var(--ufv-gray); border-radius: 8px;">
-                    <option value="">Todas las categorías</option>
+                    <option value="" data-i18n="catalog.all_modalities">Todas las categorías</option>
                     <option value="seminario">Seminario</option>
                     <option value="taller">Taller</option>
                     <option value="voluntariado">Voluntariado</option>
@@ -143,22 +143,22 @@
                 </select>
             </div>
 
-            <button class="btn btn-secondary" onclick="resetFilters()" style="font-size: 0.9rem;">Limpiar filtros</button>
+            <button class="btn btn-secondary" onclick="resetFilters()" style="font-size: 0.9rem;" data-i18n="catalog.clear_filters">Limpiar filtros</button>
         </div>
 
         <!-- Estadísticas -->
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
             <div class="card">
                 <strong style="color: var(--ufv-blue); font-size: 1.2rem;" id="total-activities">0</strong>
-                <p style="margin: 0; color: var(--ufv-text-light);">Actividades disponibles</p>
+                <p style="margin: 0; color: var(--ufv-text-light);" data-i18n="public.total_activities">Actividades disponibles</p>
             </div>
             <div class="card">
                 <strong style="color: var(--ufv-success); font-size: 1.2rem;" id="total-enrolled">0</strong>
-                <p style="margin: 0; color: var(--ufv-text-light);">Invitados inscritos</p>
+                <p style="margin: 0; color: var(--ufv-text-light);" data-i18n="public.total_enrolled">Invitados inscritos</p>
             </div>
             <div class="card">
                 <strong style="color: var(--ufv-secondary-blue); font-size: 1.2rem;" id="avg-ects">0</strong>
-                <p style="margin: 0; color: var(--ufv-text-light);">Promedio ECTS</p>
+                <p style="margin: 0; color: var(--ufv-text-light);" data-i18n="public.avg_ects">Promedio ECTS</p>
             </div>
         </div>
 
@@ -199,11 +199,11 @@
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="guest-terms" required> 
-                                Acepto los <a href="help-support.html" target="_blank">términos de servicio</a>
+                                <span data-i18n="public.i_agree">Acepto los</span> <a href="help-support.html" target="_blank" data-i18n="public.terms">términos de servicio</a>
                             </label>
                         </div>
 
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">✓ Confirmar Inscripción</button>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;" data-i18n="public.confirm_registration">✓ Confirmar Inscripción</button>
                     </form>
                 </div>
             </div>
@@ -219,7 +219,10 @@
         </p>
     </footer>
 
+    <script src="js/i18n.js"></script>
+    <script src="js/theme.js"></script>
     <script src="js/nav.js"></script>
+    <script src="js/settings-panel.js"></script>
     <script>
         // Datos de actividades (desde la API o localStorage)
         let allActivities = [];
@@ -309,7 +312,7 @@
             const container = document.getElementById('activities-list');
             
             if (activities.length === 0) {
-                container.innerHTML = '<div class="note" style="text-align: center;">No se encontraron actividades con esos filtros.</div>';
+                container.innerHTML = '<div class="note" style="text-align: center;">' + t('catalog.no_activities_found') + '</div>';
                 return;
             }
 
@@ -334,8 +337,8 @@
 
                         <div>
                             ${activity.inscritos >= activity.aforo 
-                                ? '<span class="enrollment-badge" style="background: #f44336;">LLENO</span>' 
-                                : '<span class="enrollment-badge" style="background: var(--ufv-success);">DISPONIBLE</span>'}
+                                ? '<span class="enrollment-badge" style="background: #f44336;" data-i18n="status.full">' + t('status.full') + '</span>' 
+                                : '<span class="enrollment-badge" style="background: var(--ufv-success);" data-i18n="status.available">' + t('status.available') + '</span>'}
                         </div>
                     </div>
 
@@ -412,11 +415,11 @@
                 renderActivities(allActivities);
                 updateStats();
 
-                showNotification('✓ ¡Inscripción confirmada! Te enviaremos un email de confirmación.', 'success');
+                showNotification(t('public.registration_success'), 'success');
                 closeGuestEnrollmentModal();
             } catch (error) {
                 console.error('Error:', error);
-                showNotification('Error al inscribirse. Intenta de nuevo.', 'error');
+                showNotification(t('public.registration_error'), 'error');
             }
         });
 

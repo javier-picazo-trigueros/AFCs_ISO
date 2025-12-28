@@ -241,7 +241,7 @@ function createActivityCard(a, userInscripciones) {
         } else {
             const inscribirseBtn = document.createElement('button');
             inscribirseBtn.className = 'btn btn-primary';
-            inscribirseBtn.textContent = a.disponibles <= 0 ? 'Completo' : 'Inscribirse';
+            inscribirseBtn.textContent = a.disponibles <= 0 ? t('catalog.complete') : t('catalog.register');
             inscribirseBtn.disabled = a.disponibles <= 0;
             inscribirseBtn.style.flex = '2';
             inscribirseBtn.onclick = () => inscribirse(a.id);
@@ -295,7 +295,7 @@ async function loadAndRender() {
     container.innerHTML = '';
 
     if (!all || all.length === 0) {
-        container.innerHTML = '<p class="note" style="text-align:center; padding: 2rem;">No hay actividades disponibles.</p>';
+        container.innerHTML = '<p class="note" style="text-align:center; padding: 2rem;">' + t('catalog.no_available') + '</p>';
         return;
     }
 

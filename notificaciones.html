@@ -220,42 +220,45 @@
         </button>
         <nav id="mobile-nav">
             <ul>
-                <li><a href="index.html">Inicio</a></li>
-                <li data-auth="guest-only"><a href="register.html">Registro/Login</a></li>
-                <li data-auth="user-only"><a href="catalogo.html">Catálogo</a></li>
-                <li data-auth="user-only"><a href="inscripciones.html">Mis Inscripciones</a></li>
-                <li data-auth="user-only"><a href="progreso.html">Mi Progreso</a></li>
-                <li data-auth="user-only"><a href="notificaciones.html" class="active">Notificaciones</a></li>
-                <li data-auth="admin-only"><a href="admin-panel.html">Panel Admin</a></li>
-                <li data-auth="user-only" id="logout-li"><a href="#" id="logout-link">Cerrar Sesión</a></li>
-                <li><a href="help-support.html">Ayuda</a></li>
+                <li><a href="index.html" data-i18n="nav.home">Inicio</a></li>
+                <li data-auth="guest-only"><a href="register.html" data-i18n="nav.register">Registro/Login</a></li>
+                <li data-auth="user-only"><a href="catalogo.html" data-i18n="nav.catalog">Catálogo</a></li>
+                <li data-auth="user-only"><a href="inscripciones.html" data-i18n="nav.inscriptions">Mis Inscripciones</a></li>
+                <li data-auth="user-only"><a href="progreso.html" data-i18n="nav.progress">Mi Progreso</a></li>
+                <li data-auth="user-only"><a href="notificaciones.html" class="active" data-i18n="nav.notifications">Notificaciones</a></li>
+                <li data-auth="admin-only"><a href="admin-panel.html" data-i18n="nav.admin">Panel Admin</a></li>
+                <li data-auth="user-only" id="logout-li"><a href="#" id="logout-link" data-i18n="nav.logout">Cerrar Sesión</a></li>
+                <li><a href="help-support.html" data-i18n="nav.help">Ayuda</a></li>
             </ul>
         </nav>
     </header>
 
     <div class="container">
-        <h1 style="color: var(--ufv-blue); margin-bottom: 2rem;">Centro de Notificaciones</h1>
+        <h1 style="color: var(--ufv-blue); margin-bottom: 2rem;" data-i18n="notifications.title">Centro de Notificaciones</h1>
         
         <!-- Banner de notificaciones no leídas -->
         <div id="notification-banner" class="notification-banner" style="display: none;">
-            <span>Tienes <strong id="unread-count">0</strong> notificación(es) sin leer</span>
-            <button onclick="markAllAsRead()">Marcar como leído</button>
+            <span><span data-i18n="notifications.unread_count">Tienes</span> <strong id="unread-count">0</strong> <span data-i18n="notifications.unread_items">notificación(es) sin leer</span></span>
+            <button onclick="markAllAsRead()" data-i18n="notifications.mark_read">Marcar como leído</button>
         </div>
 
         <!-- Tabs -->
         <div class="notification-tabs">
-            <button class="active" onclick="filterNotifications('todas', this)">📨 Todas</button>
-            <button onclick="filterNotifications('no-leidas', this)">🔔 Sin leer</button>
-            <button onclick="filterNotifications('inscripciones', this)">📝 Inscripciones</button>
-            <button onclick="filterNotifications('progreso', this)">📊 Progreso</button>
-            <button onclick="filterNotifications('sistema', this)">⚙️ Sistema</button>
+            <button class="active" onclick="filterNotifications('todas', this)" data-i18n="notifications.all">📨 Todas</button>
+            <button onclick="filterNotifications('no-leidas', this)" data-i18n="notifications.unread">🔔 Sin leer</button>
+            <button onclick="filterNotifications('inscripciones', this)" data-i18n="notifications.enrollments">📝 Inscripciones</button>
+            <button onclick="filterNotifications('progreso', this)" data-i18n="notifications.progress">📊 Progreso</button>
+            <button onclick="filterNotifications('sistema', this)" data-i18n="notifications.system">⚙️ Sistema</button>
         </div>
 
         <!-- Lista de notificaciones -->
         <div id="notifications-container"></div>
     </div>
 
+    <script src="js/i18n.js"></script>
+    <script src="js/theme.js"></script>
     <script src="js/nav.js"></script>
+    <script src="js/settings-panel.js"></script>
     <script>
         // Estructura de datos de notificaciones
         const notificationsData = [
@@ -363,8 +366,8 @@
             if (notifications.length === 0) {
                 container.innerHTML = `
                     <div class="notification-empty">
-                        <strong>No hay notificaciones</strong>
-                        <p>No tienes notificaciones para mostrar en esta categoría.</p>
+                        <strong data-i18n="notifications.no_notifications">No hay notificaciones</strong>
+                        <p data-i18n="notifications.no_notifications_category">No tienes notificaciones para mostrar en esta categoría.</p>
                     </div>
                 `;
                 return;
@@ -378,10 +381,10 @@
                         <div class="notification-time">${formatTime(notif.time)}</div>
                     </div>
                     <div class="notification-actions">
-                        <button onclick="markAsRead(${notif.id})" title="${notif.read ? 'Marcar como no leído' : 'Marcar como leído'}">
+                        <button onclick="markAsRead(${notif.id})" title="${notif.read ? t('notifications.mark_unread') : t('notifications.mark_as_read')}" data-i18n-title="${notif.read ? 'notifications.mark_unread' : 'notifications.mark_as_read'}">
                             ${notif.read ? '✓' : '●'}
                         </button>
-                        <button onclick="deleteNotification(${notif.id})" title="Eliminar">🗑️</button>
+                        <button onclick="deleteNotification(${notif.id})" title="${t('notifications.delete')}" data-i18n-title="notifications.delete">🗑️</button>
                     </div>
                 </div>
             `).join('');

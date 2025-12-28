@@ -114,26 +114,25 @@ db.serialize(()=>{
           const inscripcionesStmt = db.prepare('INSERT INTO inscripcion_actividades (user_id, actividad_id, status) VALUES (?,?,?)');
           // Actividad 1: Voluntariado (2 ECTS) - completado
           inscripcionesStmt.run(userId, 1, 'completado');
-          // Actividad 2: Seminario (2 ECTS) - completado
+          // Actividad 2: Seminario (3 ECTS) - completado
           inscripcionesStmt.run(userId, 2, 'completado');
-          // Actividad 3: Taller Liderazgo (1 ECTS) - completado
-          inscripcionesStmt.run(userId, 3, 'completado');
-          // Actividad 4: Taller Foto (1 ECTS) - inscrito (sin completar)
-          inscripcionesStmt.run(userId, 4, 'inscrito');
+          // Actividad 3: Taller Liderazgo (1 ECTS) - inscrito (sin completar)
+          inscripcionesStmt.run(userId, 3, 'inscrito');
           inscripcionesStmt.finalize(() => {
-            // Ahora crear registros de asistencia para las completadas (3 créditos totales: 2+1)
+            // Crear registros de asistencia para las completadas (3 créditos totales: 2 + 1)
             const asistenciaStmt = db.prepare(
               'INSERT INTO asistencias (inscripcion_id, user_id, actividad_id, asistio, creditos_otorgados, fecha_verificacion) VALUES (?,?,?,?,?,?)'
             );
             
-            // Inscripción 1: Voluntariado (2 ECTS)
+            // Inscripción 1: Voluntariado - otorga 2 ECTS
             asistenciaStmt.run(1, userId, 1, 1, 2, new Date().toISOString());
-            // Inscripción 2: Seminario (2 ECTS) - pero solo otorgamos 1 crédito para total de 3
+            // Inscripción 2: Seminario - otorga 1 ECTS (total 3)
             asistenciaStmt.run(2, userId, 2, 1, 1, new Date().toISOString());
             
             asistenciaStmt.finalize(() => {
               console.log('✓ Usuario de prueba creado: alumnos@alumnos.ufv.es (contraseña: 123456)');
-              console.log('✓ Actividades completadas: 3 créditos obtenidos');
+              console.log('✓ Créditos: 3 de 6 ECTS (50%)');
+              console.log('✓ Actividades completadas: 2 (Voluntariado 2 ECTS, Seminario 1 ECTS)');
             });
           });
         });
@@ -216,6 +215,7 @@ app.delete('/api/inscripciones/:id',(req,res)=>{
 // API: obtener progreso del usuario (créditos, actividades completadas, etc)
 app.get('/api/progreso/:user_id', (req,res)=>{
   const userId = Number(req.params.user_id);
+  const ECTS_OBJETIVO = 6; // Objetivo de ECTS
   
   // Obtener créditos totales otorgados
   db.get('SELECT COALESCE(SUM(creditos_otorgados), 0) as creditos FROM asistencias WHERE user_id = ?', [userId], (err, creditosRow)=>{
@@ -233,20 +233,14 @@ app.get('/api/progreso/:user_id', (req,res)=>{
     `, [userId], (err2, actividades)=>{
       if(err2) return res.status(500).json({error:err2.message});
       
-      // Obtener total de ECTS posibles e inscritos
-      db.get('SELECT COUNT(*) as total, SUM(a.ects) as ects_total FROM inscripcion_actividades ia JOIN actividades a ON ia.actividad_id = a.id WHERE ia.user_id = ?', [userId], (err3, countRow)=>{
-        if(err3) return res.status(500).json({error:err3.message});
-        
-        const totalInscripciones = countRow.total || 0;
-        const ectsTotales = countRow.ects_total || 0;
-        
-        res.json({
-          creditos_obtenidos: creditosObtenidos,
-          total_inscripciones: totalInscripciones,
-          ects_totales: ectsTotales,
-          actividades_completadas: actividades || [],
-          porcentaje_progreso: totalInscripciones > 0 ? Math.round((creditosObtenidos / Math.min(ectsTotales, 50)) * 100) : 0
-        });
+      // Calcular porcentaje basado en objetivo de 6 ECTS
+      const porcentajeProgreso = Math.min(Math.round((creditosObtenidos / ECTS_OBJETIVO) * 100), 100);
+      
+      res.json({
+        creditos_obtenidos: creditosObtenidos,
+        actividades_completadas: actividades || [],
+        porcentaje_progreso: porcentajeProgreso,
+        ects_objetivo: ECTS_OBJETIVO
       });
     });
   });

@@ -9,7 +9,7 @@
 </head>
 <body>
     <!-- WCAG 2.1: Skip link -->
-    <a href="#main" class="skip-link">Saltar al contenido principal</a>
+    <a href="#main" class="skip-link" data-i18n="skip_link">Saltar al contenido principal</a>
 
     <header>
         <div class="logo">
@@ -23,15 +23,15 @@
         </button>
         <nav id="mobile-nav">
             <ul>
-                <li><a href="index.html" class="active">Inicio</a></li>
-                <li data-auth="guest-only"><a href="register.html">Registro/Login</a></li>
-                <li data-auth="user-only"><a href="catalogo.html">Catálogo</a></li>
-                <li data-auth="user-only"><a href="inscripciones.html">Mis Inscripciones</a></li>
-                <li data-auth="user-only"><a href="progreso.html">Mi Progreso</a></li>
-                <li data-auth="user-only"><a href="notificaciones.html">Notificaciones</a></li>
-                <li data-auth="admin-only"><a href="admin-panel.html">Panel Admin</a></li>
-                <li data-auth="user-only" id="logout-li"><a href="#" id="logout-link">Cerrar Sesión</a></li>
-                <li><a href="help-support.html">Ayuda</a></li>
+                <li><a href="index.html" class="active" data-i18n="nav.home">Inicio</a></li>
+                <li data-auth="guest-only"><a href="register.html" data-i18n="nav.register">Registro/Login</a></li>
+                <li data-auth="user-only"><a href="catalogo.html" data-i18n="nav.catalog">Catálogo</a></li>
+                <li data-auth="user-only"><a href="inscripciones.html" data-i18n="nav.inscriptions">Mis Inscripciones</a></li>
+                <li data-auth="user-only"><a href="progreso.html" data-i18n="nav.progress">Mi Progreso</a></li>
+                <li data-auth="user-only"><a href="notificaciones.html" data-i18n="nav.notifications">Notificaciones</a></li>
+                <li data-auth="admin-only"><a href="admin-panel.html" data-i18n="nav.admin">Panel Admin</a></li>
+                <li data-auth="user-only" id="logout-li"><a href="#" id="logout-link" data-i18n="nav.logout">Cerrar Sesión</a></li>
+                <li><a href="help-support.html" data-i18n="nav.help">Ayuda</a></li>
             </ul>
         </nav>
     </header>
@@ -39,54 +39,57 @@
     <div class="container">
         <main id="main">
             <section class="hero">
-                <h1>Actividades Formativas Complementarias</h1>
-                <p>Explora, inscríbete y sigue tu progreso en las AFCs de la UFV. Forma parte de la vida universitaria y completa tus créditos de una manera sencilla y centralizada.</p>
+                <h1 data-i18n="page.title.home">Actividades Formativas Complementarias</h1>
+                <p data-i18n="page.subtitle.home">Explora, inscríbete y sigue tu progreso en las AFCs de la UFV. Forma parte de la vida universitaria y completa tus créditos de una manera sencilla y centralizada.</p>
                 <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-                    <a href="catalogo.html" class="btn btn-primary" data-auth="guest-or-user">Explorar Catálogo</a>
-                    <a href="public-catalog.html" class="btn btn-secondary" data-auth="guest-only">Catálogo Público (Invitados)</a>
-                    <a href="admin-login.html" class="btn btn-secondary" data-auth="guest-only">Acceso Administradores</a>
+                    <a href="catalogo.html" class="btn btn-primary" data-auth="guest-or-user" data-i18n="btn.explore">Explorar Catálogo</a>
+                    <a href="public-catalog.html" class="btn btn-secondary" data-auth="guest-only" data-i18n="status.public_catalog">Catálogo Público (Invitados)</a>
+                    <a href="admin-login.html" class="btn btn-secondary" data-auth="guest-only" data-i18n="btn.admin_login">Acceso Administradores</a>
                 </div>
             </section>
 
             <section class="mt-2" data-auth="guest-only">
-                <h2 class="text-center" style="color: var(--ufv-blue); margin-bottom: 2rem;">¿Cómo funciona?</h2>
+                <h2 class="text-center" style="color: var(--ufv-blue); margin-bottom: 2rem;" data-i18n="index.how_works">¿Cómo funciona?</h2>
                 <div class="catalog-grid">
                     <div class="card">
-                        <strong>1. Explora</strong>
-                        <p class="note">Navega por un catálogo dinámico de actividades: voluntariado, deportes, seminarios y más. Usa los filtros para encontrar exactamente lo que buscas.</p>
+                        <strong data-i18n="index.explore_step">1. Explora</strong>
+                        <p class="note" data-i18n="index.explore_desc">Navega por un catálogo dinámico de actividades: voluntariado, deportes, seminarios y más. Usa los filtros para encontrar exactamente lo que buscas.</p>
                     </div>
                     <div class="card">
-                        <strong>2. Inscríbete</strong>
-                        <p class="note">Con un solo clic y usando tu cuenta de la UFV, apúntate a las actividades que te interesen. ¡Olvídate de formularios externos!</p>
+                        <strong data-i18n="index.register_step">2. Inscríbete</strong>
+                        <p class="note" data-i18n="index.register_desc">Con un solo clic y usando tu cuenta de la UFV, apúntate a las actividades que te interesen. ¡Olvídate de formularios externos!</p>
                     </div>
                     <div class="card">
-                        <strong>3. Participa y Suma ECTS</strong>
-                        <p class="note">Asiste a las actividades y sigue tu progreso de ECTS en tiempo real desde tu panel personal. Todo lo que necesitas para completar tus créditos, en un mismo lugar.</p>
+                        <strong data-i18n="index.participate_step">3. Participa y Suma ECTS</strong>
+                        <p class="note" data-i18n="index.participate_desc">Asiste a las actividades y sigue tu progreso de ECTS en tiempo real desde tu panel personal. Todo lo que necesitas para completar tus créditos, en un mismo lugar.</p>
                     </div>
                 </div>
             </section>
 
             <!-- Contenido para usuarios logueados -->
             <section class="mt-2" data-auth="user-only">
-                <h2 class="text-center" style="color: var(--ufv-blue); margin-bottom: 2rem;">Bienvenido de nuevo</h2>
-                <p class="text-center note" style="max-width: 600px; margin: 0 auto 2rem auto;">Accede directamente a tus secciones o explora nuevas actividades en el catálogo.</p>
+                <h2 class="text-center" style="color: var(--ufv-blue); margin-bottom: 2rem;" data-i18n="index.welcome_back">Bienvenido de nuevo</h2>
+                <p class="text-center note" style="max-width: 600px; margin: 0 auto 2rem auto;" data-i18n="index.welcome_text">Accede directamente a tus secciones o explora nuevas actividades en el catálogo.</p>
                 <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-                    <a href="catalogo.html" class="btn btn-primary">Ver Catálogo</a>
-                    <a href="progreso.html" class="btn btn-secondary">Mi Progreso</a>
+                    <a href="catalogo.html" class="btn btn-primary" data-i18n="catalog.title">Ver Catálogo</a>
+                    <a href="progreso.html" class="btn btn-secondary" data-i18n="progress.title">Mi Progreso</a>
                 </div>
             </section>
 
              <!-- Contenido para administradores logueados -->
              <section class="mt-2" data-auth="admin-only">
-                <h2 class="text-center" style="color: var(--ufv-blue); margin-bottom: 2rem;">Panel de Administrador</h2>
-                <p class="text-center note" style="max-width: 600px; margin: 0 auto 2rem auto;">Has iniciado sesión como administrador. Accede al panel para gestionar actividades y ver estadísticas.</p>
+                <h2 class="text-center" style="color: var(--ufv-blue); margin-bottom: 2rem;" data-i18n="index.admin_panel">Panel de Administrador</h2>
+                <p class="text-center note" style="max-width: 600px; margin: 0 auto 2rem auto;" data-i18n="status.admin_login">Has iniciado sesión como administrador. Accede al panel para gestionar actividades y ver estadísticas.</p>
                 <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-                    <a href="admin-panel.html" class="btn btn-primary">Ir al Panel</a>
+                    <a href="admin-panel.html" class="btn btn-primary" data-i18n="btn.go_panel">Ir al Panel</a>
                 </div>
             </section>
         </main>
     </div>
 
+    <script src="js/i18n.js"></script>
+    <script src="js/theme.js"></script>
     <script src="js/nav.js"></script>
+    <script src="js/settings-panel.js"></script>
 </body>
 </html>

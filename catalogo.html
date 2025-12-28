@@ -9,7 +9,7 @@
 </head>
 <body>
     <!-- WCAG 2.1: Skip link -->
-    <a href="#main" class="skip-link">Saltar al contenido principal</a>
+    <a href="#main" class="skip-link" data-i18n="skip_link">Saltar al contenido principal</a>
 
     <header>
         <div class="logo">
@@ -23,15 +23,15 @@
         </button>
         <nav id="mobile-nav">
             <ul>
-                <li><a href="index.html">Inicio</a></li>
-                <li data-auth="guest-only"><a href="register.html">Registro/Login</a></li>
-                <li data-auth="user-only"><a href="catalogo.html" class="active">Catálogo</a></li>
-                <li data-auth="user-only"><a href="inscripciones.html">Mis Inscripciones</a></li>
-                <li data-auth="user-only"><a href="progreso.html">Mi Progreso</a></li>
-                <li data-auth="user-only"><a href="notificaciones.html">Notificaciones</a></li>
-                <li data-auth="admin-only"><a href="admin-panel.html">Panel Admin</a></li>
-                <li data-auth="user-only" id="logout-li"><a href="#" id="logout-link">Cerrar Sesión</a></li>
-                <li><a href="help-support.html">Ayuda</a></li>
+                <li><a href="index.html" data-i18n="nav.home">Inicio</a></li>
+                <li data-auth="guest-only"><a href="register.html" data-i18n="nav.register">Registro/Login</a></li>
+                <li data-auth="user-only"><a href="catalogo.html" class="active" data-i18n="nav.catalog">Catálogo</a></li>
+                <li data-auth="user-only"><a href="inscripciones.html" data-i18n="nav.inscriptions">Mis Inscripciones</a></li>
+                <li data-auth="user-only"><a href="progreso.html" data-i18n="nav.progress">Mi Progreso</a></li>
+                <li data-auth="user-only"><a href="notificaciones.html" data-i18n="nav.notifications">Notificaciones</a></li>
+                <li data-auth="admin-only"><a href="admin-panel.html" data-i18n="nav.admin">Panel Admin</a></li>
+                <li data-auth="user-only" id="logout-li"><a href="#" id="logout-link" data-i18n="nav.logout">Cerrar Sesión</a></li>
+                <li><a href="help-support.html" data-i18n="nav.help">Ayuda</a></li>
             </ul>
         </nav>
     </header>
@@ -40,27 +40,27 @@
         <main id="main">
         
         <div class="filter-bar">
-            <input type="text" id="search" placeholder="Buscar por nombre o palabra clave..." aria-label="Buscar actividades" aria-describedby="search-help">
+            <input type="text" id="search" placeholder="Buscar por nombre o palabra clave..." data-i18n-placeholder="catalog.search_placeholder" aria-label="Buscar actividades" aria-describedby="search-help">
             <span id="search-help" class="sr-only">Escribe palabras clave para filtrar actividades por nombre</span>
-            <select id="filter-ects" aria-label="Filtrar por créditos ECTS">
-                <option value="">Todos los ECTS</option>
+            <select id="filter-ects" aria-label="Filtrar por créditos ECTS" data-i18n-aria-label="catalog.filter_ects">
+                <option value="" data-i18n="catalog.all_ects">Todos los ECTS</option>
                 <option value="1">1 crédito</option>
                 <option value="2">2 créditos</option>
                 <option value="3">3 créditos</option>
                 <option value="gte3">3 o más créditos</option>
             </select>
-            <select id="filter-modalidad" aria-label="Filtrar por modalidad">
-                <option value="">Todas las modalidades</option>
-                <option value="Presencial">Presencial</option>
-                <option value="Online">Online</option>
-                <option value="Híbrido">Híbrido</option>
+            <select id="filter-modalidad" aria-label="Filtrar por modalidad" data-i18n-aria-label="catalog.filter_modality">
+                <option value="" data-i18n="catalog.all_modalities">Todas las modalidades</option>
+                <option value="Presencial" data-i18n="catalog.presencial">Presencial</option>
+                <option value="Online" data-i18n="catalog.online">Online</option>
+                <option value="Híbrido" data-i18n="catalog.hibrido">Híbrido</option>
             </select>
-            <select id="filter-disponible" aria-label="Filtrar por disponibilidad">
-                <option value="">Cualquier disponibilidad</option>
-                <option value="1">Con plazas disponibles</option>
-                <option value="0">Sin plazas</option>
+            <select id="filter-disponible" aria-label="Filtrar por disponibilidad" data-i18n-aria-label="catalog.filter_available">
+                <option value="" data-i18n="catalog.any_availability">Cualquier disponibilidad</option>
+                <option value="1" data-i18n="catalog.with_spaces">Con plazas disponibles</option>
+                <option value="0" data-i18n="catalog.no_spaces">Sin plazas</option>
             </select>
-            <button id="btn-clear" class="btn btn-secondary" aria-label="Limpiar todos los filtros">Limpiar Filtros</button>
+            <button id="btn-clear" class="btn btn-secondary" aria-label="Limpiar todos los filtros" data-i18n="catalog.clear_filters">Limpiar Filtros</button>
         </div>
 
         <div id="catalog-list" role="region" aria-live="polite" aria-label="Lista de actividades disponibles">
@@ -71,7 +71,7 @@
     <!-- Modal para Ver Más -->
     <div id="activity-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div class="modal-content">
-            <button class="modal-close" aria-label="Cerrar diálogo" onclick="closeModal()">&times;</button>
+            <button class="modal-close" aria-label="Cerrar diálogo" data-i18n-aria-label="catalog.close" onclick="closeModal()">&times;</button>
             <div class="modal-header">
                 <h2 id="modal-title"></h2>
                 <input type="hidden" id="modal-activity-id">
@@ -79,25 +79,28 @@
             <div class="modal-body">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
                     <div>
-                        <p><strong>Créditos ECTS:</strong> <span id="modal-ects"></span></p>
-                        <p><strong>Modalidad:</strong> <span id="modal-modalidad">Presencial</span></p>
+                        <p><strong data-i18n="inscriptions.ects">Créditos ECTS</strong>: <span id="modal-ects"></span></p>
+                        <p><strong data-i18n="catalog.modality">Modalidad</strong>: <span id="modal-modalidad">Presencial</span></p>
                     </div>
                     <div>
-                        <p><strong>Fecha de inicio:</strong> <span id="modal-fecha-inicio"></span></p>
-                        <p><strong>Fecha de fin:</strong> <span id="modal-fecha-fin"></span></p>
+                        <p><strong data-i18n="catalog.start_date">Fecha de inicio</strong>: <span id="modal-fecha-inicio"></span></p>
+                        <p><strong data-i18n="catalog.end_date">Fecha de fin</strong>: <span id="modal-fecha-fin"></span></p>
                     </div>
                 </div>
                 <hr>
-                <h3>Descripción</h3>
+                <h3 data-i18n="catalog.description">Descripción</h3>
                 <p id="modal-description"></p>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal()">Cerrar</button>
+                <button class="btn btn-secondary" data-i18n="catalog.close" onclick="closeModal()">Cerrar</button>
             </div>
         </div>
     </div>
 
+    <script src="js/i18n.js"></script>
+    <script src="js/theme.js"></script>
     <script src="js/nav.js"></script>
     <script src="js/catalog.js"></script>
+    <script src="js/settings-panel.js"></script>
 </body>
 </html>
