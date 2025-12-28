@@ -57,7 +57,7 @@
 
   <div style="margin-top: 24px;">
     <div style="display: flex; gap: 10px;">
-      <button class="btn-primary" onclick="showNewActivityModal()">+ Nueva Actividad</button>
+      <button class="btn-primary" onclick="showNewActivityModal()" aria-label="Crear nueva actividad">+ Nueva Actividad</button>
       <button class="btn-ghost" onclick="refreshData()">Actualizar</button>
       <a href="admin-asistencia.html" class="btn btn-secondary" style="text-decoration: none; padding: 8px 16px; border-radius: 4px; display: inline-block;">📋 Verificar Asistencia</a>
     </div>
@@ -91,17 +91,24 @@
       <h3>Nueva Actividad</h3>
     </div>
     <form id="new-activity-form">
-      <input type="text" id="act-nombre" placeholder="Nombre" required style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
-      <textarea id="act-descripcion" placeholder="Descripción" style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc;min-height:100px"></textarea>
-      <input type="number" id="act-ects" placeholder="ECTS" value="1" style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
-      <input type="date" id="act-inicio" placeholder="Fecha inicio" required style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
-      <input type="date" id="act-fin" placeholder="Fecha fin" required style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
-      <select id="act-modalidad" style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
+      <label for="act-nombre">Nombre de la Actividad *</label>
+      <input type="text" id="act-nombre" placeholder="Nombre" required style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc" aria-label="Nombre de la Actividad">
+      <label for="act-descripcion">Descripción</label>
+      <textarea id="act-descripcion" placeholder="Descripción" aria-label="Descripción de la Actividad" style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc;min-height:100px"></textarea>
+      <label for="act-ects">Créditos ECTS *</label>
+      <input type="number" id="act-ects" placeholder="ECTS" value="1" required style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc" aria-label="Créditos ECTS">
+      <label for="act-inicio">Fecha de Inicio *</label>
+      <input type="date" id="act-inicio" placeholder="Fecha inicio" required style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc" aria-label="Fecha de inicio">
+      <label for="act-fin">Fecha de Fin *</label>
+      <input type="date" id="act-fin" placeholder="Fecha fin" required style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc" aria-label="Fecha de fin">
+      <label for="act-modalidad">Modalidad *</label>
+      <select id="act-modalidad" style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc" aria-label="Modalidad de la actividad">
         <option value="Presencial">Presencial</option>
         <option value="Online">Online</option>
         <option value="Híbrido">Híbrido</option>
       </select>
-      <input type="number" id="act-max" placeholder="Máximo inscritos" value="50" style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
+      <label for="act-max">Máximo de Inscritos *</label>
+      <input type="number" id="act-max" placeholder="Máximo inscritos" value="50" required style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc" aria-label="Máximo de inscritos">
       <button type="submit" class="btn-primary">Crear</button>
     </form>
   </div>
@@ -115,17 +122,24 @@
       <h3>Editar Actividad</h3>
     </div>
     <form id="edit-activity-form">
-      <input type="text" id="edit-act-nombre" placeholder="Nombre" required style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
-      <textarea id="edit-act-descripcion" placeholder="Descripción" style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc;min-height:100px"></textarea>
-      <input type="number" id="edit-act-ects" placeholder="ECTS" value="1" style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
-      <input type="date" id="edit-act-inicio" placeholder="Fecha inicio" required style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
-      <input type="date" id="edit-act-fin" placeholder="Fecha fin" required style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
-      <select id="edit-act-modalidad" style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
+      <label for="edit-act-nombre">Nombre de la Actividad *</label>
+      <input type="text" id="edit-act-nombre" placeholder="Nombre" required style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc" aria-label="Nombre de la Actividad">
+      <label for="edit-act-descripcion">Descripción</label>
+      <textarea id="edit-act-descripcion" placeholder="Descripción" style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc;min-height:100px" aria-label="Descripción de la Actividad"></textarea>
+      <label for="edit-act-ects">Créditos ECTS *</label>
+      <input type="number" id="edit-act-ects" placeholder="ECTS" value="1" required style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc" aria-label="Créditos ECTS">
+      <label for="edit-act-inicio">Fecha de Inicio *</label>
+      <input type="date" id="edit-act-inicio" placeholder="Fecha inicio" required style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc" aria-label="Fecha de inicio">
+      <label for="edit-act-fin">Fecha de Fin *</label>
+      <input type="date" id="edit-act-fin" placeholder="Fecha fin" required style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc" aria-label="Fecha de fin">
+      <label for="edit-act-modalidad">Modalidad *</label>
+      <select id="edit-act-modalidad" style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc" aria-label="Modalidad de la actividad">
         <option value="Presencial">Presencial</option>
         <option value="Online">Online</option>
         <option value="Híbrido">Híbrido</option>
       </select>
-      <input type="number" id="edit-act-max" placeholder="Máximo inscritos" value="50" style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc">
+      <label for="edit-act-max">Máximo de Inscritos *</label>
+      <input type="number" id="edit-act-max" placeholder="Máximo inscritos" value="50" required style="width:100%;padding:8px;margin:8px 0;border-radius:4px;border:1px solid #ccc" aria-label="Máximo de inscritos">
       <button type="submit" class="btn-primary">Guardar Cambios</button>
     </form>
   </div>

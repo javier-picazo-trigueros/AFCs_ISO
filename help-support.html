@@ -183,10 +183,10 @@
         <h1 style="color: var(--ufv-blue); margin-bottom: 3rem; text-align: center;">Centro de Ayuda y Soporte</h1>
         
         <!-- Tabs: FAQs vs Contacto -->
-        <div class="tab-buttons">
-            <button class="active" onclick="switchTab('faqs')">Preguntas Frecuentes</button>
-            <button onclick="switchTab('contacto')">Contactar</button>
-            <button onclick="switchTab('recursos')">Recursos</button>
+        <div class="tab-buttons" role="tablist">
+            <button class="active" aria-selected="true" aria-controls="faqs-section" role="tab" onclick="switchTab('faqs')">Preguntas Frecuentes</button>
+            <button aria-selected="false" aria-controls="contacto-section" role="tab" onclick="switchTab('contacto')">Contactar</button>
+            <button aria-selected="false" aria-controls="recursos-section" role="tab" onclick="switchTab('recursos')">Recursos</button>
         </div>
 
         <!-- SECCIÓN 1: FAQs -->
@@ -194,12 +194,12 @@
             <h2 style="color: var(--ufv-blue); margin-bottom: 1.5rem;">Preguntas Frecuentes</h2>
             
             <!-- Filtro de categorías -->
-            <div class="filter-buttons">
-                <button class="active" onclick="filterFAQs('todas', this)">Todas</button>
-                <button onclick="filterFAQs('general', this)">General</button>
-                <button onclick="filterFAQs('inscripciones', this)">Inscripciones</button>
-                <button onclick="filterFAQs('ects', this)">Créditos ECTS</button>
-                <button onclick="filterFAQs('tecnico', this)">Técnico</button>
+            <div class="filter-buttons" role="group" aria-label="Filtrar preguntas frecuentes por categoría">
+                <button class="active" onclick="filterFAQs('todas', this)" aria-label="Ver todas las preguntas">Todas</button>
+                <button onclick="filterFAQs('general', this)" aria-label="Ver preguntas sobre información general">General</button>
+                <button onclick="filterFAQs('inscripciones', this)" aria-label="Ver preguntas sobre inscripciones">Inscripciones</button>
+                <button onclick="filterFAQs('ects', this)" aria-label="Ver preguntas sobre créditos ECTS">Créditos ECTS</button>
+                <button onclick="filterFAQs('tecnico', this)" aria-label="Ver preguntas técnicas">Técnico</button>
             </div>
 
             <!-- Acordeón FAQs -->
@@ -372,12 +372,13 @@
                 item.className = 'card faq-item';
                 item.style.marginBottom = '1rem';
                 item.style.padding = '0';
+                const answerId = `faq-answer-${index}`;
                 item.innerHTML = `
-                    <div class="faq-question" onclick="toggleFAQ(this)">
+                    <div class="faq-question" role="button" tabindex="0" onclick="toggleFAQ(this)" aria-expanded="false" aria-controls="${answerId}">
                         <strong style="color: var(--ufv-blue);">${faq.question}</strong>
                         <span class="faq-icon" style="color: var(--ufv-secondary-blue); font-size: 0.8rem;">▼</span>
                     </div>
-                    <div class="faq-answer">
+                    <div class="faq-answer" id="${answerId}">
                         ${faq.answer}
                     </div>
                 `;
@@ -387,7 +388,11 @@
 
         // Expandir/Contraer FAQ
         function toggleFAQ(element) {
-            element.closest('.faq-item').classList.toggle('open');
+            const item = element.closest('.faq-item');
+            item.classList.toggle('open');
+            const isOpen = item.classList.contains('open');
+            element.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            announceToScreenReader(isOpen ? 'Pregunta expandida' : 'Pregunta contraída', 'polite');
         }
 
         // Filtrar FAQs
@@ -403,11 +408,18 @@
         function switchTab(tab) {
             // Remover clase active de todas las secciones y botones
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.tab-buttons button').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-buttons button').forEach(b => {
+                b.classList.remove('active');
+                b.setAttribute('aria-selected', 'false');
+            });
             
             // Agregar clase active a la sección y botón correspondiente
             document.getElementById(tab + '-section').classList.add('active');
             event.target.classList.add('active');
+            event.target.setAttribute('aria-selected', 'true');
+            
+            // Anunciar cambio a lectores de pantalla
+            announceToScreenReader(`Abierta la sección de ${tab}`, 'polite');
         }
 
         // Enviar formulario contacto
@@ -445,6 +457,18 @@
                 notification.classList.add('hide');
                 setTimeout(() => notification.remove(), 300);
             }, 3000);
+        }
+
+        // Anunciar a lectores de pantalla
+        function announceToScreenReader(message, priority = 'polite') {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('aria-live', priority);
+            announcement.setAttribute('aria-atomic', 'true');
+            announcement.className = 'sr-only';
+            announcement.textContent = message;
+            document.body.appendChild(announcement);
+            
+            setTimeout(() => announcement.remove(), 1000);
         }
 
         // Cargar FAQs al iniciar

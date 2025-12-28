@@ -98,8 +98,8 @@ function renderDetail(actividad, inscritos){
       <td>${creditos} ECTS</td>
       <td>
         <div class="action-buttons">
-          ${!asistio ? `<button class="btn-small btn-check" onclick="marcarAsistencia(${inscrito.inscripcion_id}, ${inscrito.user_id}, ${actividad.id}, true)">✓ Asistió</button>` : ''}
-          ${asistio ? `<button class="btn-small btn-uncheck" onclick="marcarAsistencia(${inscrito.inscripcion_id}, ${inscrito.user_id}, ${actividad.id}, false)">✗ Desmarcar</button>` : `<button class="btn-small btn-uncheck" onclick="marcarAsistencia(${inscrito.inscripcion_id}, ${inscrito.user_id}, ${actividad.id}, false)">✗ No asistió</button>`}
+          ${!asistio ? `<button class="btn-small btn-check" onclick="marcarAsistencia(${inscrito.inscripcion_id}, ${inscrito.user_id}, ${actividad.id}, true)" aria-label="Marcar a ${inscrito.nombre} como asistió">✓ Asistió</button>` : ''}
+          ${asistio ? `<button class="btn-small btn-uncheck" onclick="marcarAsistencia(${inscrito.inscripcion_id}, ${inscrito.user_id}, ${actividad.id}, false)" aria-label="Desmarcar asistencia de ${inscrito.nombre}">✗ Desmarcar</button>` : `<button class="btn-small btn-uncheck" onclick="marcarAsistencia(${inscrito.inscripcion_id}, ${inscrito.user_id}, ${actividad.id}, false)" aria-label="Marcar a ${inscrito.nombre} como no asistió">✗ No asistió</button>`}
         </div>
       </td>
     `;
